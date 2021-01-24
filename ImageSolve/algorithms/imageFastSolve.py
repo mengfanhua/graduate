@@ -9,8 +9,8 @@ import time
 def image_iter_solve(ori, des, min_xy=None, max_xy=None,
                      min_xy1=None, max_xy1=None, loss=None):
     """
-    :param ori: road of origin image
-    :param des: road of destination image
+    :param ori: path of origin image
+    :param des: path of destination image
     :param min_xy: feature of min xy via iterate
     :param min_xy1: feature of min xy via iterate
     :param max_xy: feature of max xy via iterate
@@ -52,11 +52,24 @@ def image_iter_solve(ori, des, min_xy=None, max_xy=None,
     a, kkk, x, y = image_translate(ori_key, des_key)
     new_loss = validate(ori_key, des_key, a, kkk, x, y)
     if loss is None:
-        return image_iter_solve(ori, des, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
+        ori_keys, des_keys, new_loss_l = image_iter_solve(
+            ori, des, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
+        ori_key_s, des_key_s = _cul_origin_point(min_xy, min_xy1, ori_keys, des_keys)
+        return ori_key_s, des_key_s, new_loss_l
     elif loss > new_loss:
-        return image_iter_solve(ori, des, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
+        ori_keys, des_keys, new_loss_l = image_iter_solve(
+            ori, des, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
+        ori_key_s, des_key_s = _cul_origin_point(min_xy, min_xy1, ori_keys, des_keys)
+        return ori_key_s, des_key_s, new_loss_l
     else:
         return ori_key, des_key, new_loss
+
+
+def _cul_origin_point(min_xyz, min_xyz1, ori_key1, des_key1):
+    if min_xyz is not None:
+        return np.add(ori_key1, min_xyz), np.add(des_key1, min_xyz1)
+    else:
+        return ori_key1, des_key1
 
 
 if __name__ == '__main__':
