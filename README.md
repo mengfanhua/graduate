@@ -21,3 +21,7 @@ It's a tool for image registration.(for graduate)
 
 重构了部分原重叠式UI demo的结构，但尚未测试；接下来尝试构建对比式UI demo的结构；
 尝试添加新的组件，尝试修改imagebox的整体结构以完成要求。
+
+2021年1月26日22:12:50 author：Meng
+
+完成了对比式UI的设计组成，尝试主界面的拼装与实现，尝试添加新功能，尝试修改imagebox结构以满足要求。
