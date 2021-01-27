@@ -25,3 +25,7 @@ It's a tool for image registration.(for graduate)
 2021年1月26日22:12:50 author：Meng
 
 完成了对比式UI的设计组成，尝试主界面的拼装与实现，尝试添加新功能，尝试修改imagebox结构以满足要求。
+
+2021年1月27日14:10:38 author：Meng
+
+修复了由于控件复用产生的界面显示bug，添加了点变换算法的python文件便于调用。
