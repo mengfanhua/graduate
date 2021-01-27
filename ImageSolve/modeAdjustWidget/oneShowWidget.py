@@ -17,4 +17,6 @@ class OneShowWidget(QWidget):
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.aboveWidget)
         self.layout.addWidget(self.imageBox)
+        self.layout.setStretch(0, 1)
+        self.layout.setStretch(1, 5)
         self.setLayout(self.layout)
