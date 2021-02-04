@@ -24,8 +24,9 @@ class ImageBox(QWidget):
         :param img_path: image file path
         :return:
         """
-        # self.img = QPixmap(img_path)  # 此处需更改为加载PIL，然后在绘图时执行转换
-        self.img = Image.open(img_path)
+        self.img = QPixmap(img_path)  # 此处需针对不同类型的图片使用不同的加载方法
+        # self.img = Image.open(img_path)
+        # self.img = img_path
         self.scaled_img = 1
 
     def paintEvent(self, e):
@@ -45,7 +46,7 @@ class ImageBox(QWidget):
             painter.rotate(self.angle)
             # 下面绘图部分需根据具体图片大小进行分割，然后分块加载，至于起止点需通过计算得出
             # painter.drawPixmap(self.point, timg)
-            # painter.drawPixmap(self.point, self.img)
+            painter.drawPixmap(self.point, self.img)
             painter.end()
             # self.img.crop((left, up, right, down))
 
