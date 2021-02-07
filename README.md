@@ -46,3 +46,7 @@ It's a tool for image registration.(for graduate)
 新增图片QPixmap加载的子线程，单测试已通过，从网络获取图片尚未测试，尚未完成与Imagebox的链接与其加速实现。
 
 对于普通图片与瓦片图片的兼容性尚未测试。
+
+2021年2月7日20:34:31 author：Meng
+
+新增瓦片合成与分解算法，初步测试已通过。
