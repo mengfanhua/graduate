@@ -40,3 +40,9 @@ It's a tool for image registration.(for graduate)
 2021年2月4日20:58:03 author：Meng
 
 新添加了缓存地图方法类进行地图的动态加载，具体效果如何待测试，且需要子线程的支持，需测试。
+
+2021年2月7日13:24:49 author：Meng
+
+新增图片QPixmap加载的子线程，单测试已通过，从网络获取图片尚未测试，尚未完成与Imagebox的链接与其加速实现。
+
+对于普通图片与瓦片图片的兼容性尚未测试。
