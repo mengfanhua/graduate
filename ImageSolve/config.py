@@ -38,7 +38,6 @@ class CacheMap:
 
     def _combinePath(self, key):
         z, x, y = key
-        z, x, y = str(z), str(x), str(y)
         # 此处添加requests方法，并添加本地缓存
         if os.path.exists(os.path.join(self.outlineCachePath, z, x, y + ".png")):
             return os.path.join(self.outlineCachePath, z, x, y + ".png")
