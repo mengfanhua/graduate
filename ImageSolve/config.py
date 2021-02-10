@@ -3,22 +3,28 @@ from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPu
 from PyQt5.Qt import QPixmap, QPoint, Qt, QPainter, QIcon
 from PyQt5.QtCore import QSize, pyqtSignal, QThread
 import os
+from PIL import Image, ImageQt
 import requests
 
 
 class CacheMap:
-    def __init__(self, size=25, cachePath=None):
+    def __init__(self, size=50, cachePath=None):
         self.pixmap = {}
         self.order = []
         self.size = size
         self.outlineCachePath = cachePath
         self.session = requests.session()
 
+    def addOriginMap(self, path, scale=1):
+        # 此处专为普通图片设计，用来对大图进行分割，使其避免显存溢出
+        self.pixmap[("1", "0", "0")] = QPixmap(path)
+        self.order.append(("1", "0", "0"))
+
     def addMap(self, key, path):
         temp = QPixmap(path)
         self.pixmap[key] = temp
         if len(self.order) == self.size:
-            self.pixmap.pop(self.order.index(0))
+            self.pixmap.pop(self.order[0])
             self.order.pop(0)
             self.order.append(key)
         else:
@@ -56,3 +62,4 @@ class CacheMap:
 
     def __del__(self):
         self.session.close()
+
