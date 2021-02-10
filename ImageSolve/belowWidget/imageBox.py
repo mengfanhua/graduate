@@ -1,6 +1,8 @@
 from ImageSolve.config import *
-from PIL import Image, ImageQt
-from ImageSolve.algorithms.xyToXY import dx_to_ox
+from ImageSolve.algorithms.xyToXY import dx_to_ox, ox_to_dx
+from ImageSolve.algorithms.tileCombine import convertNumberToStr, convertStrToNumber
+from ImageSolve.belowWidget.imageThread import ImageThread
+import math
 
 
 class ImageBox(QWidget):
@@ -17,6 +19,9 @@ class ImageBox(QWidget):
         self.scale = 1
         self.angle = 0
         self.featureList = []
+        self.cacheMap = CacheMap()
+        self.thread = ImageThread(self.cacheMap)
+        self.level = 3
 
     def set_image(self, img_path):
         """
@@ -24,10 +29,39 @@ class ImageBox(QWidget):
         :param img_path: image file path
         :return:
         """
-        self.img = QPixmap(img_path)  # 此处需针对不同类型的图片使用不同的加载方法
+        self.img = img_path  # 此处需针对不同类型的图片使用不同的加载方法
+        self.cacheMap.outlineCachePath = img_path
+        if os.path.isfile(img_path):
+            self.cacheMap.addOriginMap(img_path)
+        self.thread = ImageThread(self.cacheMap)
+        self.thread.imageGet.connect(self.paintGet)
         # self.img = Image.open(img_path)
         # self.img = img_path
         self.scaled_img = 1
+        self.pointInit()
+
+    def calculate_cache(self):
+        x_min = 500 - 768
+        y_min = 300 - 512
+        x_max = 1536
+        y_max = 1024
+        x_one, y_one = dx_to_ox(x_min, y_min, self.scale, self.angle, self.point.x(), self.point.y())
+        x_two, y_two = dx_to_ox(x_min, y_max, self.scale, self.angle, self.point.x(), self.point.y())
+        x_three, y_three = dx_to_ox(x_max, y_min, self.scale, self.angle, self.point.x(), self.point.y())
+        x_four, y_four = dx_to_ox(x_max, y_max, self.scale, self.angle, self.point.x(), self.point.y())
+        xx_max = max(x_one, x_two, x_three, x_four)
+        xx_min = min(x_one, x_two, x_three, x_four)
+        yy_max = max(y_one, y_two, y_three, y_four)
+        yy_min = min(y_one, y_two, y_three, y_four)
+        point_list = []
+        for i in range(int(xx_min/256), math.ceil(xx_max/256)+1):
+            for j in range(int(yy_min/256), math.ceil(yy_max/256)+1):
+                point_list.append((convertNumberToStr(self.level), convertNumberToStr(i), convertNumberToStr(-j)))
+        return point_list
+
+    def paintGet(self, cacheMap):
+        # self.cacheMap = copy.deepcopy(cacheMap)
+        self.repaint()
 
     def paintEvent(self, e):
         """
@@ -46,7 +80,12 @@ class ImageBox(QWidget):
             painter.rotate(self.angle)
             # 下面绘图部分需根据具体图片大小进行分割，然后分块加载，至于起止点需通过计算得出
             # painter.drawPixmap(self.point, timg)
-            painter.drawPixmap(self.point, self.img)
+            tempMap = self.cacheMap.pixmap.copy()
+            tempList = self.cacheMap.order.copy()
+            for i in range(len(tempList)):
+                x, y = convertStrToNumber(tempList[i][1]), -convertStrToNumber(tempList[i][2])
+                xx, yy = ox_to_dx(x*256, y*256, self.scale, self.angle, self.point.x(), self.point.y())
+                painter.drawPixmap(QPoint(xx, yy), tempMap[tempList[i]])
             painter.end()
             # self.img.crop((left, up, right, down))
 
@@ -56,11 +95,12 @@ class ImageBox(QWidget):
         :param e: QMouseEvent
         :return:
         """
-        if self.left_click:
+        if self.left_click and self.scaled_img == 1:
             self.end_pos = e.pos() - self.start_pos
             self.point = self.point + self.end_pos
             self.start_pos = e.pos()
             self.repaint()
+            self.pointInit()
 
     def mousePressEvent(self, e):
         """
@@ -68,7 +108,7 @@ class ImageBox(QWidget):
         :param e: QMouseEvent
         :return:
         """
-        if e.button() == Qt.LeftButton:
+        if e.button() == Qt.LeftButton and self.scaled_img == 1:
             self.left_click = True
             self.start_pos = e.pos()
 
@@ -78,8 +118,10 @@ class ImageBox(QWidget):
         :param e: QMouseEvent
         :return:
         """
-        if e.button() == Qt.LeftButton:
+        if e.button() == Qt.LeftButton and self.scaled_img == 1:
             self.left_click = False
+            if not self.thread.isRunning():
+                self.thread.start()
 
     def mouseDoubleClickEvent(self, e):
         # 此处需要添加记录特征点模块，需要测试
@@ -91,3 +133,9 @@ class ImageBox(QWidget):
             self.featureList.append((ox, oy))
             self.repaint()
             self.featureSignal.emit((ox, oy))
+
+    def pointInit(self):
+        point = self.calculate_cache()
+        if not self.thread.isRunning():
+            self.thread.setPoint(point)
+            self.thread.start()
