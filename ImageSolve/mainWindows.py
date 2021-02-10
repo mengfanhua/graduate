@@ -73,6 +73,8 @@ class MainWindows(QWidget):
         self.sizeBackAdjust.slider.minSlider.valueChanged.connect(self.slider_move1)
         self.sizeBackAdjust1.slider.maxSlider.valueChanged.connect(self.slider1_move1)
         self.sizeBackAdjust1.slider.minSlider.valueChanged.connect(self.slider1_move1)
+        self.flag_exchange()
+        self.flag_exchange()
 
     def exchangeMode(self):
         if self.layout.currentIndex() == 0:
@@ -126,6 +128,7 @@ class MainWindows(QWidget):
         :return:
         """
         img_name, _ = QFileDialog.getOpenFileName(self, "Open Front Image File", filter="*.jpg;;*.png;;*.jpeg")
+        # dir_name = QFileDialog.getExistingDirectory(self, "open a dir")
         self.imageFrontBox.set_image(img_name)
         self.imageFrontBox1.set_image(img_name)
         """
@@ -140,7 +143,8 @@ class MainWindows(QWidget):
         select image file and open it
         :return:
         """
-        img_name, _ = QFileDialog.getOpenFileName(self, "Open Back Image File", filter="*.jpg;;*.png;;*.jpeg")
+        # img_name, _ = QFileDialog.getOpenFileName(self, "Open Back Image File", filter="*.jpg;;*.png;;*.jpeg")
+        img_name = QFileDialog.getExistingDirectory(self, "open a dir")
         self.imageBackBox.set_image(img_name)
         self.imageBackBox1.set_image(img_name)
         """
