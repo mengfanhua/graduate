@@ -2,7 +2,7 @@ from ImageSolve.config import *
 
 
 class ImageThread(QThread):
-    imageGet = pyqtSignal(QPixmap, tuple)
+    imageGet = pyqtSignal(CacheMap)
 
     def __init__(self, cacheMap):
         super(ImageThread, self).__init__()
@@ -15,20 +15,28 @@ class ImageThread(QThread):
         self.flag = 1
 
     def run(self):
-        print("成功触发！")
         self.flag = 0
-        for i in range(len(self.point)):
-            if self.flag == 1:
-                break
-            map = self.cacheMap.getMap(self.point[i])
-            self.imageGet.emit(map, self.point[i])
+        if os.path.isfile(self.cacheMap.outlineCachePath):
+            # 此处判断是否为文件，如果为文件则为普通图片，即将所有图片直接加载出来，key值采用倍数法确定
+            for i in range(len(self.cacheMap.order)):
+                if self.flag == 1:
+                    break
+                self.cacheMap.getMap(self.cacheMap.order[i])
+            self.imageGet.emit(self.cacheMap)
+        else:
+            for i in range(len(self.point)):
+                if self.flag == 1:
+                    break
+                self.cacheMap.getMap(self.point[i])
+            self.imageGet.emit(self.cacheMap)
+        # self.cacheMap = ""
 
 
 class TesWidget(QWidget):
     def __init__(self):
         super(TesWidget, self).__init__()
         self.setFixedSize(QSize(500, 300))
-        self.cacheMap = CacheMap()
+        self.cacheMap = CacheMap(cachePath="C:\\Users\\meng\\Desktop\\19892.jpg")
         self.cacheMap.addMap((1, 2, 5), "C:\\Users\\meng\\Desktop\\19892.jpg")
         self.thread = ImageThread(self.cacheMap)
         self.button = QPushButton("触发")
@@ -46,8 +54,8 @@ class TesWidget(QWidget):
         self.f += 1
 
     def teext(self):
-        while self.thread.isRunning():
-            self.thread.stop()
+        while not self.thread.isRunning():
+            self.thread.quit()
         self.thread.setPoint([(1, 2, 5)])
         self.thread.start()
 
