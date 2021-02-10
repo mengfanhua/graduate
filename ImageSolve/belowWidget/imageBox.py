@@ -84,8 +84,9 @@ class ImageBox(QWidget):
             tempList = self.cacheMap.order.copy()
             for i in range(len(tempList)):
                 x, y = convertStrToNumber(tempList[i][1]), -convertStrToNumber(tempList[i][2])
-                xx, yy = ox_to_dx(x*256, y*256, self.scale, self.angle, self.point.x(), self.point.y())
-                painter.drawPixmap(QPoint(xx, yy), tempMap[tempList[i]])
+                # xx, yy = ox_to_dx(x*256, y*256, self.scale, self.angle, self.point.x(), self.point.y())
+                painter.drawPixmap(QPoint(x * 256 + self.point.x(), y * 256 + self.point.y()),
+                                   tempMap[tempList[i]])
             painter.end()
             # self.img.crop((left, up, right, down))
 
