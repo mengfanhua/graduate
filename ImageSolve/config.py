@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFileDialog, QStackedLayout, QSlider, QScrollArea
-from PyQt5.Qt import QPixmap, QPoint, Qt, QPainter, QIcon
+from PyQt5.Qt import QPixmap, QPoint, Qt, QPainter, QIcon, QColor, QPalette
 from PyQt5.QtCore import QSize, pyqtSignal, QThread
 import os
 from PIL import Image, ImageQt
@@ -63,3 +63,7 @@ class CacheMap:
     def __del__(self):
         self.session.close()
 
+
+# test
+def getValueColor(value):
+    return "#ff0000"
