@@ -129,8 +129,9 @@ class MainWindows(QWidget):
         """
         img_name, _ = QFileDialog.getOpenFileName(self, "Open Front Image File", filter="*.jpg;;*.png;;*.jpeg")
         # dir_name = QFileDialog.getExistingDirectory(self, "open a dir")
-        self.imageFrontBox.set_image(img_name)
-        self.imageFrontBox1.set_image(img_name)
+        if img_name != "":
+            self.imageFrontBox.set_image(img_name)
+            self.imageFrontBox1.set_image(img_name)
         """
         d = int(self.below.frontImage.scale * 10)
         f = self.below.frontImage.scale - float(d)/10
@@ -145,8 +146,9 @@ class MainWindows(QWidget):
         """
         # img_name, _ = QFileDialog.getOpenFileName(self, "Open Back Image File", filter="*.jpg;;*.png;;*.jpeg")
         img_name = QFileDialog.getExistingDirectory(self, "open a dir")
-        self.imageBackBox.set_image(img_name)
-        self.imageBackBox1.set_image(img_name)
+        if img_name != "":
+            self.imageBackBox.set_image(img_name)
+            self.imageBackBox1.set_image(img_name)
         """
         d = int(self.below.backImage.scale * 10)
         f = self.below.backImage.scale - float(d)/10
