@@ -4,6 +4,7 @@ from ImageSolve.modeAdjustWidget.oneShowWidget import OneShowWidget
 from ImageSolve.modeAdjustWidget.twoShowWidget import TwoShowWidget
 from ImageSolve.aboveWidget.pointShowWidget import PointShowWidget
 from ImageSolve.config import *
+from ImageSolve.functionWidget.pointWidget import PointWidget
 
 
 class MainWindows(QWidget):
@@ -73,6 +74,7 @@ class MainWindows(QWidget):
         self.sizeBackAdjust.slider.minSlider.valueChanged.connect(self.slider_move1)
         self.sizeBackAdjust1.slider.maxSlider.valueChanged.connect(self.slider1_move1)
         self.sizeBackAdjust1.slider.minSlider.valueChanged.connect(self.slider1_move1)
+        self.imageBackBox.featureSignal.connect(self.addPoint)
         self.flag_exchange()
         self.flag_exchange()
 
@@ -166,7 +168,7 @@ class MainWindows(QWidget):
         self.sizeFrontAdjust1.slider.maxSlider.setValue(self.sizeFrontAdjust.slider.maxSlider.value())
         self.sizeFrontAdjust1.slider.minSlider.setValue(self.sizeFrontAdjust.slider.minSlider.value())
         self.imageFrontBox.scale = d + f
-        self.imageFrontBox.adjustSize()
+        self.imageFrontBox.pointInit()
         self.update()
 
     def slider_move1(self):
@@ -179,7 +181,7 @@ class MainWindows(QWidget):
         self.sizeBackAdjust1.slider.maxSlider.setValue(self.sizeBackAdjust.slider.maxSlider.value())
         self.sizeBackAdjust1.slider.minSlider.setValue(self.sizeBackAdjust.slider.minSlider.value())
         self.imageBackBox.scale = d + f
-        self.imageBackBox.adjustSize()
+        self.imageBackBox.pointInit()
         self.update()
 
     def slider1_move(self):
@@ -192,7 +194,7 @@ class MainWindows(QWidget):
         self.sizeFrontAdjust.slider.maxSlider.setValue(self.sizeFrontAdjust1.slider.maxSlider.value())
         self.sizeFrontAdjust.slider.minSlider.setValue(self.sizeFrontAdjust1.slider.minSlider.value())
         self.imageFrontBox1.scale = d + f
-        self.imageFrontBox1.adjustSize()
+        self.imageFrontBox1.pointInit()
         self.update()
 
     def slider1_move1(self):
@@ -205,7 +207,7 @@ class MainWindows(QWidget):
         self.sizeBackAdjust.slider.maxSlider.setValue(self.sizeBackAdjust1.slider.maxSlider.value())
         self.sizeBackAdjust.slider.minSlider.setValue(self.sizeBackAdjust1.slider.minSlider.value())
         self.imageBackBox1.scale = d + f
-        self.imageBackBox1.adjustSize()
+        self.imageBackBox1.pointInit()
         self.update()
 
     def flag_exchange(self):
@@ -222,3 +224,20 @@ class MainWindows(QWidget):
             self.oneShow.aboveWidget.showWidget.layout.setCurrentIndex(0)
             self.exchangeBack.setText("front")
         self.repaint()
+
+    def addPoint(self, point):
+        value = self.pointBackContent.layout.count()
+        temp = PointWidget(point, value + 1)
+        temp.deletePoint.connect(self.delPoint)
+        self.pointBackContent.layout.addWidget(temp)
+
+    def delPoint(self, value):
+        count = self.pointBackContent.layout.count()
+        for i in range(value, count):
+            self.pointBackContent.layout.itemAt(i).widget().value -= 1
+            self.pointBackContent.layout.itemAt(i).widget().repaint()
+        self.imageBackBox.featureList.pop(value - 1)
+        self.pointBackContent.layout.itemAt(value - 1).widget().deleteLater()
+        self.repaint()
+
+
