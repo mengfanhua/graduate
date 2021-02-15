@@ -91,8 +91,10 @@ class ImageBox(QWidget):
             for j in range(len(self.featureList)):
                 painter.setPen(QPen(QColor(getValueColor(j + 1))))
                 painter.setBrush(QColor(getValueColor(j + 1)))
-                painter.drawEllipse(QPoint(round(self.featureList[j][0]) + self.point.x(),
-                                           round(self.featureList[j][1] + self.point.y())), 5, 5)
+                xx, yy = ox_to_dx(self.point.x(), self.point.y(),
+                                  self.scale, self.angle, 0, 0)
+                painter.drawEllipse(QPoint(self.featureList[j][0] + self.point.x(),
+                                           self.featureList[j][1] + self.point.y()), 5, 5)
             painter.end()
             # self.img.crop((left, up, right, down))
 
@@ -129,10 +131,11 @@ class ImageBox(QWidget):
         if e.button() == Qt.LeftButton and self.scaled_img == 1:
             end_time = time.time()
             if end_time - self.start_time < 0.4:
-                x, y = e.pos().x(), e.pos().y()
+                x, y = self.start_pos.x(), self.start_pos.y()
                 dx, dy = self.point.x(), self.point.y()
                 # 此处为x', y'点，需通过反向计算得到图上对应的原点
-                ox, oy = dx_to_ox(x, y, self.scale, self.angle, dx, dy)
+                dxx, dyy = ox_to_dx(dx, dy, self.scale, self.angle, 0, 0)
+                ox, oy = dx_to_ox(x - dxx, y - dyy, self.scale, self.angle, 0, 0)
                 self.featureList.append((ox, oy))
                 self.repaint()
                 self.featureSignal.emit((ox, oy))
