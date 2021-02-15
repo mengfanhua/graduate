@@ -12,6 +12,8 @@ class ImageThread(QThread):
 
     def setPoint(self, point):
         self.point = point.copy()
+        if len(self.point) > self.cacheMap.size:
+            self.cacheMap.size = len(self.point) + 10
         self.flag = 1
 
     def run(self):
