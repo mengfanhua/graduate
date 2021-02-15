@@ -2,7 +2,7 @@ from ImageSolve.config import *
 from ImageSolve.algorithms.xyToXY import dx_to_ox, ox_to_dx
 from ImageSolve.algorithms.tileCombine import convertNumberToStr, convertStrToNumber
 from ImageSolve.belowWidget.imageThread import ImageThread
-import math
+import math, time
 
 
 class ImageBox(QWidget):
@@ -22,6 +22,7 @@ class ImageBox(QWidget):
         self.cacheMap = CacheMap()
         self.thread = ImageThread(self.cacheMap)
         self.level = 3
+        self.start_time = None
 
     def set_image(self, img_path):
         """
@@ -87,6 +88,11 @@ class ImageBox(QWidget):
                 # xx, yy = ox_to_dx(x*256, y*256, self.scale, self.angle, self.point.x(), self.point.y())
                 painter.drawPixmap(QPoint(x * 256 + self.point.x(), y * 256 + self.point.y()),
                                    tempMap[tempList[i]])
+            for j in range(len(self.featureList)):
+                painter.setPen(QPen(QColor(getValueColor(j + 1))))
+                painter.setBrush(QColor(getValueColor(j + 1)))
+                painter.drawEllipse(QPoint(round(self.featureList[j][0]) + self.point.x(),
+                                           round(self.featureList[j][1] + self.point.y())), 5, 5)
             painter.end()
             # self.img.crop((left, up, right, down))
 
@@ -111,6 +117,7 @@ class ImageBox(QWidget):
         """
         if e.button() == Qt.LeftButton and self.scaled_img == 1:
             self.left_click = True
+            self.start_time = time.time()
             self.start_pos = e.pos()
 
     def mouseReleaseEvent(self, e):
@@ -120,10 +127,19 @@ class ImageBox(QWidget):
         :return:
         """
         if e.button() == Qt.LeftButton and self.scaled_img == 1:
+            end_time = time.time()
+            if end_time - self.start_time < 0.4:
+                x, y = e.pos().x(), e.pos().y()
+                dx, dy = self.point.x(), self.point.y()
+                # 此处为x', y'点，需通过反向计算得到图上对应的原点
+                ox, oy = dx_to_ox(x, y, self.scale, self.angle, dx, dy)
+                self.featureList.append((ox, oy))
+                self.repaint()
+                self.featureSignal.emit((ox, oy))
             self.left_click = False
             if not self.thread.isRunning():
                 self.thread.start()
-
+    """
     def mouseDoubleClickEvent(self, e):
         # 此处需要添加记录特征点模块，需要测试
         if e.button() == Qt.LeftButton and self.scaled_img == 1:
@@ -134,6 +150,7 @@ class ImageBox(QWidget):
             self.featureList.append((ox, oy))
             self.repaint()
             self.featureSignal.emit((ox, oy))
+    """
 
     def pointInit(self):
         point = self.calculate_cache()
