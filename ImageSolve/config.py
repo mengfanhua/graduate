@@ -1,14 +1,16 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFileDialog, QStackedLayout, QSlider, QScrollArea
-from PyQt5.Qt import QPixmap, QPoint, Qt, QPainter, QIcon, QColor, QPalette
+from PyQt5.Qt import QPixmap, QPoint, Qt, QPainter, QIcon, QColor, QPalette, QPen, QBrush
 from PyQt5.QtCore import QSize, pyqtSignal, QThread
 import os
 from PIL import Image, ImageQt
 import requests
+import math
+from ImageSolve.algorithms.tileCombine import convertNumberToStr, convertStrToNumber
 
 
 class CacheMap:
-    def __init__(self, size=50, cachePath=None):
+    def __init__(self, size=20, cachePath=None):
         self.pixmap = {}
         self.order = []
         self.size = size
@@ -44,6 +46,10 @@ class CacheMap:
 
     def _combinePath(self, key):
         z, x, y = key
+        maxs = math.ceil(math.pi * 6378137 / math.pow(2, 26 - int(z)))
+        if abs(convertStrToNumber(x)) > maxs or abs(convertStrToNumber(y)) > maxs or\
+                int(z) < 3 or int(z) > 19:
+            return None
         # 此处添加requests方法，并添加本地缓存
         if os.path.exists(os.path.join(self.outlineCachePath, z, x, y + ".png")):
             return os.path.join(self.outlineCachePath, z, x, y + ".png")
