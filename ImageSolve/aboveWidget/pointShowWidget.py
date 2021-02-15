@@ -8,6 +8,15 @@ class PointShowWidget(QWidget):
         ly = QVBoxLayout()
         self.area = QScrollArea()
         self.layout.setAlignment(Qt.AlignTop)
-        self.area.setLayout(self.layout)
         ly.addWidget(self.area)
+        self.content = QWidget()
+        self.layout.setSpacing(0)
+        # self.content.setFixedWidth()
+        self.content.setLayout(self.layout)
+        self.area.setWidget(self.content)
+        self.area.setWidgetResizable(True)
         self.setLayout(ly)
+        self.area.verticalScrollBar().rangeChanged.connect(self.get_last)
+
+    def get_last(self):
+        self.area.verticalScrollBar().setValue(self.area.verticalScrollBar().maximum())
