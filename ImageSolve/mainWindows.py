@@ -26,6 +26,7 @@ class MainWindows(QWidget):
         self.imagePaste = QPushButton("合成")
         self.imageFrontBox = ImageBox()
         self.imageBackBox = ImageBox()
+        self.radioButton = QRadioButton("加载地图瓦片（百度）")
         # 同一组件不可同时放置在两个布局中，故复制一份组件，并在监听器中同步操作两个界面
         self.openFrontImage1 = QPushButton("打开前景图")
         self.openBackImage1 = QPushButton("打开背景图")
@@ -41,6 +42,7 @@ class MainWindows(QWidget):
         self.imagePaste1 = QPushButton("合成")
         self.imageFrontBox1 = ImageBox()
         self.imageBackBox1 = ImageBox()
+        self.radioButton1 = QRadioButton("加载地图瓦片（百度）")
         self.layout = QStackedLayout()
         self.layout.setStackingMode(QStackedLayout.StackOne)
         self.oneShow = OneShowWidget(self.openFrontImage, self.openBackImage,
@@ -49,13 +51,14 @@ class MainWindows(QWidget):
                                      self.lastPage, self.nextPage, self.imageFrontBox,
                                      self.imageBackBox, self.exchangeShowMode,
                                      self.imagePaste, self.exchangeBack, self.pointFrontContent,
-                                     self.pointBackContent)
+                                     self.pointBackContent, self.radioButton)
         self.twoShow = TwoShowWidget(self.openFrontImage1, self.openBackImage1,
                                      self.sizeFrontAdjust1, self.sizeBackAdjust1,
                                      self.angleFrontAdjust1, self.angleBackAdjust1,
                                      self.lastPage1, self.nextPage1, self.imageFrontBox1,
                                      self.imageBackBox1, self.exchangeShowMode1,
-                                     self.imagePaste1, self.pointFrontContent1, self.pointBackContent1)
+                                     self.imagePaste1, self.pointFrontContent1,
+                                     self.pointBackContent1, self.radioButton1)
         self.layout.addWidget(self.oneShow)
         self.layout.addWidget(self.twoShow)
         self.setLayout(self.layout)
@@ -74,9 +77,23 @@ class MainWindows(QWidget):
         self.sizeBackAdjust.slider.minSlider.valueChanged.connect(self.slider_move1)
         self.sizeBackAdjust1.slider.maxSlider.valueChanged.connect(self.slider1_move1)
         self.sizeBackAdjust1.slider.minSlider.valueChanged.connect(self.slider1_move1)
-        self.imageBackBox.featureSignal.connect(self.addPoint)
+        self.radioButton.clicked.connect(self.radioChanged)
+        self.radioButton1.clicked.connect(self.radioChanged1)
+        self.imageFrontBox.featureSignal.connect(self.addPoint)
+        self.imageFrontBox1.featureSignal.connect(self.addPoint)
+        self.imageBackBox.featureSignal.connect(self.addPoint1)
+        self.imageBackBox1.featureSignal.connect(self.addPoint1)
+        # 此处造成前后列表共享，即单独删除某一个页面即可
+        self.imageFrontBox.featureList = self.imageFrontBox1.featureList
+        self.imageBackBox.featureList =self.imageBackBox1.featureList
         self.flag_exchange()
         self.flag_exchange()
+
+    def radioChanged(self):
+        self.radioButton1.setChecked(self.radioButton.isChecked())
+
+    def radioChanged1(self):
+        self.radioButton.setChecked(self.radioButton1.isChecked())
 
     def exchangeMode(self):
         if self.layout.currentIndex() == 0:
@@ -90,6 +107,10 @@ class MainWindows(QWidget):
             self.imageFrontBox1.scale = self.imageFrontBox.scale
             self.imageFrontBox1.angle = self.imageFrontBox.angle
             self.imageFrontBox1.featureList = self.imageFrontBox.featureList
+            self.imageFrontBox1.cacheMap = self.imageFrontBox.cacheMap
+            self.imageFrontBox1.thread = self.imageFrontBox.thread
+            self.imageFrontBox1.level = self.imageFrontBox.level
+            self.imageFrontBox1.start_time = self.imageFrontBox.start_time
 
             self.imageBackBox1.img = self.imageBackBox.img
             self.imageBackBox1.scaled_img = self.imageBackBox.scaled_img
@@ -100,6 +121,10 @@ class MainWindows(QWidget):
             self.imageBackBox1.scale = self.imageBackBox.scale
             self.imageBackBox1.angle = self.imageBackBox.angle
             self.imageBackBox1.featureList = self.imageBackBox.featureList
+            self.imageBackBox1.cacheMap = self.imageBackBox.cacheMap
+            self.imageBackBox1.thread = self.imageBackBox.thread
+            self.imageBackBox1.level = self.imageBackBox.level
+            self.imageBackBox1.start_time = self.imageBackBox.start_time
             self.repaint()
         else:
             self.layout.setCurrentIndex(0)
@@ -112,6 +137,10 @@ class MainWindows(QWidget):
             self.imageFrontBox.scale = self.imageFrontBox1.scale
             self.imageFrontBox.angle = self.imageFrontBox1.angle
             self.imageFrontBox.featureList = self.imageFrontBox1.featureList
+            self.imageFrontBox.cacheMap = self.imageFrontBox1.cacheMap
+            self.imageFrontBox.thread = self.imageFrontBox1.thread
+            self.imageFrontBox.level = self.imageFrontBox1.level
+            self.imageFrontBox.start_time = self.imageFrontBox1.start_time
 
             self.imageBackBox.img = self.imageBackBox1.img
             self.imageBackBox.scaled_img = self.imageBackBox1.scaled_img
@@ -122,6 +151,10 @@ class MainWindows(QWidget):
             self.imageBackBox.scale = self.imageBackBox1.scale
             self.imageBackBox.angle = self.imageBackBox1.angle
             self.imageBackBox.featureList = self.imageBackBox1.featureList
+            self.imageBackBox.cacheMap = self.imageBackBox1.cacheMap
+            self.imageBackBox.thread = self.imageBackBox1.thread
+            self.imageBackBox.level = self.imageBackBox1.level
+            self.imageBackBox.start_time = self.imageBackBox1.start_time
             self.repaint()
 
     def open_front_image(self):
@@ -146,8 +179,10 @@ class MainWindows(QWidget):
         select image file and open it
         :return:
         """
-        # img_name, _ = QFileDialog.getOpenFileName(self, "Open Back Image File", filter="*.jpg;;*.png;;*.jpeg")
-        img_name = QFileDialog.getExistingDirectory(self, "open a dir")
+        if self.radioButton.isChecked():
+            img_name = QFileDialog.getExistingDirectory(self, "Open a Dir")
+        else:
+            img_name, _ = QFileDialog.getOpenFileName(self, "Open Back Image File", filter="*.jpg;;*.png;;*.jpeg")
         if img_name != "":
             self.imageBackBox.set_image(img_name)
             self.imageBackBox1.set_image(img_name)
@@ -176,11 +211,19 @@ class MainWindows(QWidget):
         used to enlarge image
         :return:
         """
-        d = float(self.sizeBackAdjust.slider.maxSlider.value()) / 10
-        f = float(self.sizeBackAdjust.slider.minSlider.value()) / 1000
-        self.sizeBackAdjust1.slider.maxSlider.setValue(self.sizeBackAdjust.slider.maxSlider.value())
-        self.sizeBackAdjust1.slider.minSlider.setValue(self.sizeBackAdjust.slider.minSlider.value())
-        self.imageBackBox.scale = d + f
+        if self.imageBackBox.scaled_img and os.path.isfile(self.imageBackBox.img):
+            d = float(self.sizeBackAdjust.slider.maxSlider.value()) / 10
+            f = float(self.sizeBackAdjust.slider.minSlider.value()) / 1000
+            self.sizeBackAdjust1.slider.maxSlider.setValue(self.sizeBackAdjust.slider.maxSlider.value())
+            self.sizeBackAdjust1.slider.minSlider.setValue(self.sizeBackAdjust.slider.minSlider.value())
+            self.imageBackBox.scale = d + f
+        else:
+            d = min(max(self.sizeBackAdjust.slider.maxSlider.value(), 3), 19)
+            f = float(self.sizeBackAdjust.slider.minSlider.value()) / 100 + 1
+            self.sizeBackAdjust1.slider.maxSlider.setValue(self.sizeBackAdjust.slider.maxSlider.value())
+            self.sizeBackAdjust1.slider.minSlider.setValue(self.sizeBackAdjust.slider.minSlider.value())
+            self.imageBackBox.scale = f
+            self.imageBackBox.level = d
         self.imageBackBox.pointInit()
         self.update()
 
@@ -202,11 +245,19 @@ class MainWindows(QWidget):
         used to enlarge image
         :return:
         """
-        d = float(self.sizeBackAdjust1.slider.maxSlider.value()) / 10
-        f = float(self.sizeBackAdjust1.slider.minSlider.value()) / 1000
-        self.sizeBackAdjust.slider.maxSlider.setValue(self.sizeBackAdjust1.slider.maxSlider.value())
-        self.sizeBackAdjust.slider.minSlider.setValue(self.sizeBackAdjust1.slider.minSlider.value())
-        self.imageBackBox1.scale = d + f
+        if self.imageBackBox1.scaled_img and os.path.isfile(self.imageBackBox1.img):
+            d = float(self.sizeBackAdjust1.slider.maxSlider.value()) / 10
+            f = float(self.sizeBackAdjust1.slider.minSlider.value()) / 1000
+            self.sizeBackAdjust.slider.maxSlider.setValue(self.sizeBackAdjust1.slider.maxSlider.value())
+            self.sizeBackAdjust.slider.minSlider.setValue(self.sizeBackAdjust1.slider.minSlider.value())
+            self.imageBackBox1.scale = d + f
+        else:
+            d = min(max(self.sizeBackAdjust1.slider.maxSlider.value(), 3), 19)
+            f = float(self.sizeBackAdjust1.slider.minSlider.value()) / 100 + 1
+            self.sizeBackAdjust.slider.maxSlider.setValue(self.sizeBackAdjust1.slider.maxSlider.value())
+            self.sizeBackAdjust.slider.minSlider.setValue(self.sizeBackAdjust1.slider.minSlider.value())
+            self.imageBackBox1.scale = f
+            self.imageBackBox1.level = d
         self.imageBackBox1.pointInit()
         self.update()
 
@@ -226,18 +277,58 @@ class MainWindows(QWidget):
         self.repaint()
 
     def addPoint(self, point):
-        value = self.pointBackContent.layout.count()
+        value = self.pointFrontContent.layout.count()
         temp = PointWidget(point, value + 1)
         temp.deletePoint.connect(self.delPoint)
+        self.pointFrontContent.layout.addWidget(temp)
+
+        value = self.pointFrontContent1.layout.count()
+        temp = PointWidget(point, value + 1)
+        temp.deletePoint.connect(self.delPoint)
+        self.pointFrontContent1.layout.addWidget(temp)
+
+    def addPoint1(self, point):
+        value = self.pointBackContent.layout.count()
+        temp = PointWidget(point, value + 1)
+        temp.deletePoint.connect(self.delPoint1)
         self.pointBackContent.layout.addWidget(temp)
 
+        value = self.pointBackContent1.layout.count()
+        temp = PointWidget(point, value + 1)
+        temp.deletePoint.connect(self.delPoint1)
+        self.pointBackContent1.layout.addWidget(temp)
+
     def delPoint(self, value):
+        count = self.pointFrontContent.layout.count()
+        for i in range(value, count):
+            self.pointFrontContent.layout.itemAt(i).widget().value -= 1
+            self.pointFrontContent.layout.itemAt(i).widget().repaint()
+        # self.imageFrontBox.featureList.pop(value - 1)
+        self.pointFrontContent.layout.itemAt(value - 1).widget().deleteLater()
+
+        count = self.pointFrontContent1.layout.count()
+        for i in range(value, count):
+            self.pointFrontContent1.layout.itemAt(i).widget().value -= 1
+            self.pointFrontContent1.layout.itemAt(i).widget().repaint()
+        self.imageFrontBox1.featureList.pop(value - 1)
+        self.pointFrontContent1.layout.itemAt(value - 1).widget().deleteLater()
+
+        self.repaint()
+
+    def delPoint1(self, value):
         count = self.pointBackContent.layout.count()
         for i in range(value, count):
             self.pointBackContent.layout.itemAt(i).widget().value -= 1
             self.pointBackContent.layout.itemAt(i).widget().repaint()
-        self.imageBackBox.featureList.pop(value - 1)
+        # self.imageBackBox.featureList.pop(value - 1)
         self.pointBackContent.layout.itemAt(value - 1).widget().deleteLater()
+
+        count = self.pointBackContent1.layout.count()
+        for i in range(value, count):
+            self.pointBackContent1.layout.itemAt(i).widget().value -= 1
+            self.pointBackContent1.layout.itemAt(i).widget().repaint()
+        self.imageBackBox1.featureList.pop(value - 1)
+        self.pointBackContent1.layout.itemAt(value - 1).widget().deleteLater()
         self.repaint()
 
 
