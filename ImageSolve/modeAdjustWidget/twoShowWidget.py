@@ -7,12 +7,12 @@ class TwoShowWidget(QWidget):
     def __init__(self, openFrontImage, openBackImage, sizeFrontAdjust,
                  sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                  lastPage, nextPage, imageFrontBox, imageBackBox,
-                 exchangeShowMode, imagePaste, point1, point2):
+                 exchangeShowMode, imagePaste, point1, point2, radio):
         super(TwoShowWidget, self).__init__()
         self.layout = QVBoxLayout()
         self.aboveWidget = MixWidget(openFrontImage, sizeFrontAdjust,
-                                     angleFrontAdjust, imageFrontBox, point1)
-        self.middleWidget = MixWidget(openBackImage, sizeBackAdjust, angleBackAdjust, imageBackBox, point2)
+                                     angleFrontAdjust, imageFrontBox, point1, None)
+        self.middleWidget = MixWidget(openBackImage, sizeBackAdjust, angleBackAdjust, imageBackBox, point2, radio)
         self.bottomWidget = BottomWidget(lastPage, nextPage, exchangeShowMode, imagePaste)
         self.layout.addWidget(self.aboveWidget)
         self.layout.addWidget(self.middleWidget)

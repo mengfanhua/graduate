@@ -7,11 +7,12 @@ from ImageSolve.aboveWidget.doublePointShowWidget import DoublePointShowWidget
 class AboveWidget(QWidget):
     def __init__(self,openFrontImage, openBackImage, sizeFrontAdjust,
                  sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
-                 lastPage, nextPage, exchangeShowMode, imagePaste, exchangeFrontBack, point1, point2):
+                 lastPage, nextPage, exchangeShowMode, imagePaste, exchangeFrontBack,
+                 point1, point2, radio):
         super(AboveWidget, self).__init__()
         self.layout = QHBoxLayout()
         self.layout.setAlignment(Qt.AlignLeft)
-        self.openImageWidget = OpenImageWidget(openFrontImage, openBackImage)
+        self.openImageWidget = OpenImageWidget(openFrontImage, openBackImage, radio)
         self.sizeWidget = DoubleAdjustWidget(sizeFrontAdjust, sizeBackAdjust)
         self.angleWidget = DoubleAdjustWidget(angleFrontAdjust, angleBackAdjust)
         self.upDownWidget = OpenImageWidget(lastPage, nextPage)
