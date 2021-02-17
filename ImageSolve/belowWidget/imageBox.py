@@ -16,7 +16,7 @@ class ImageBox(QWidget):
         self.start_pos = None
         self.end_pos = None
         self.left_click = False
-        self.scale = 1
+        self.scale = 0.1
         self.angle = 0
         self.featureList = []
         self.cacheMap = CacheMap()
@@ -62,7 +62,8 @@ class ImageBox(QWidget):
 
     def paintGet(self, cacheMap):
         # self.cacheMap = copy.deepcopy(cacheMap)
-        self.repaint()
+        if self.scaled_img:
+            self.repaint()
 
     def paintEvent(self, e):
         """
@@ -94,7 +95,7 @@ class ImageBox(QWidget):
                 xx, yy = ox_to_dx(self.point.x(), self.point.y(),
                                   self.scale, self.angle, 0, 0)
                 painter.drawEllipse(QPoint(self.featureList[j][0] + self.point.x(),
-                                           self.featureList[j][1] + self.point.y()), 5, 5)
+                                           self.featureList[j][1] + self.point.y()), 5/self.scale, 5/self.scale)
             painter.end()
             # self.img.crop((left, up, right, down))
 
@@ -157,6 +158,6 @@ class ImageBox(QWidget):
 
     def pointInit(self):
         point = self.calculate_cache()
-        if not self.thread.isRunning():
+        if not self.thread.isRunning() and self.scaled_img:
             self.thread.setPoint(point)
             self.thread.start()
