@@ -9,7 +9,7 @@ class PointWidget(QWidget):
         # self.setFixedHeight(50)
         self.value = value
         self.point = point
-        self.label = QLabel(str(self.value) + "." + str((round(point[0]), round(point[1]))))
+        self.label = QLabel(str(self.value) + "." + str((point[0], round(point[1]), round(point[2]))))
         pt = QPalette()
         pt.setColor(QPalette.WindowText, QColor(getValueColor(self.value)))
         self.label.setPalette(pt)
@@ -29,8 +29,8 @@ class PointWidget(QWidget):
         pt = QPalette()
         pt.setColor(QPalette.WindowText, QColor(getValueColor(self.value)))
         self.label.setPalette(pt)
-        self.label.setText(str(self.value) + "." + str((round(self.point[0]),
-                                                         round(self.point[1]))))
+        self.label.setText(str(self.value) + "." + str((self.point[0], round(self.point[1]),
+                                                        round(self.point[2]))))
 
     def pushDown(self):
         self.deletePoint.emit(self.value)
