@@ -1,25 +1,31 @@
 from ImageSolve.config import *
-from ImageSolve.functionWidget.pointWidget import PointWidget
+from ImageSolve.algorithms.colorGenerate import ColorGenerate
+from ImageSolve.algorithms.colorGenerate import ColorTranslate
 
 
 class widget(QWidget):
     def __init__(self):
         super(widget, self).__init__()
-        self.asd = PointWidget((1, 2, 3), 1)
-        self.zxc = PointWidget((1, 5, 3), 2)
-        self.radioButton = QRadioButton("click")
-        self.layout = QHBoxLayout()
-        self.layout.addWidget(self.asd)
-        self.layout.addWidget(self.zxc)
-        self.layout.addWidget(self.radioButton)
+        self.setFixedHeight(700)
+        self.button = QPushButton("添加")
+        self.value = 0
+        self.layout = QVBoxLayout()
+        self.layout.setAlignment(Qt.AlignTop)
+        self.layout.addWidget(self.button)
         self.setLayout(self.layout)
-        self.asd.deletePoint.connect(self.delWidget)
-        self.zxc.deletePoint.connect(self.delWidget)
-        self.radioButton.clicked.connect(self.tett)
+        self.button.clicked.connect(self.tett)
 
     def tett(self):
-        print(self.radioButton.isChecked())
-        self.radioButton.setChecked(False)
+        num = self.value % 16 + 14
+        pt = QPalette()
+        color = ColorTranslate(ColorGenerate(num*3.3))
+        print(color)
+        pt.setColor(QPalette.WindowText, QColor(color))
+        label = QLabel("hello!")
+        label.setPalette(pt)
+        self.layout.addWidget(label)
+        self.value += 1
+        label.repaint()
 
     # 测试layout对组件的删除作用
     def delWidget(self, value):
