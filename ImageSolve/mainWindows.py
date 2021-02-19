@@ -77,6 +77,16 @@ class MainWindows(QWidget):
         self.sizeBackAdjust.slider.minSlider.valueChanged.connect(self.slider_move1)
         self.sizeBackAdjust1.slider.maxSlider.valueChanged.connect(self.slider1_move1)
         self.sizeBackAdjust1.slider.minSlider.valueChanged.connect(self.slider1_move1)
+
+        self.angleFrontAdjust.slider.maxSlider.valueChanged.connect(self.slider_angle)
+        self.angleFrontAdjust.slider.minSlider.valueChanged.connect(self.slider_angle)
+        self.angleFrontAdjust1.slider.maxSlider.valueChanged.connect(self.slider1_angle)
+        self.angleFrontAdjust1.slider.minSlider.valueChanged.connect(self.slider1_angle)
+        self.angleBackAdjust.slider.maxSlider.valueChanged.connect(self.slider_angle1)
+        self.angleBackAdjust.slider.minSlider.valueChanged.connect(self.slider_angle1)
+        self.angleBackAdjust1.slider.maxSlider.valueChanged.connect(self.slider1_angle1)
+        self.angleBackAdjust1.slider.minSlider.valueChanged.connect(self.slider1_angle1)
+
         self.radioButton.clicked.connect(self.radioChanged)
         self.radioButton1.clicked.connect(self.radioChanged1)
         self.imageFrontBox.featureSignal.connect(self.addPoint)
@@ -258,6 +268,46 @@ class MainWindows(QWidget):
             self.sizeBackAdjust.slider.minSlider.setValue(self.sizeBackAdjust1.slider.minSlider.value())
             self.imageBackBox1.scale = f
             self.imageBackBox1.level = d
+        self.imageBackBox1.pointInit()
+        self.update()
+
+    def slider_angle(self):
+        if self.imageFrontBox.scaled_img:
+            d = float(self.angleFrontAdjust.slider.maxSlider.value() - 1) * 18
+            f = float(self.angleFrontAdjust.slider.minSlider.value()) * 0.18
+            self.angleFrontAdjust1.slider.maxSlider.setValue(self.angleFrontAdjust.slider.maxSlider.value())
+            self.angleFrontAdjust1.slider.minSlider.setValue(self.angleFrontAdjust.slider.minSlider.value())
+            self.imageFrontBox.angle = d + f
+        self.imageFrontBox.pointInit()
+        self.update()
+
+    def slider_angle1(self):
+        if self.imageBackBox.scaled_img:
+            d = float(self.angleBackAdjust.slider.maxSlider.value() - 1) * 18
+            f = float(self.angleBackAdjust.slider.minSlider.value()) * 0.18
+            self.angleBackAdjust1.slider.maxSlider.setValue(self.angleBackAdjust.slider.maxSlider.value())
+            self.angleBackAdjust1.slider.minSlider.setValue(self.angleBackAdjust.slider.minSlider.value())
+            self.imageBackBox.angle = d + f
+        self.imageBackBox.pointInit()
+        self.update()
+
+    def slider1_angle(self):
+        if self.imageFrontBox1.scaled_img:
+            d = float(self.angleFrontAdjust1.slider.maxSlider.value() - 1) * 18
+            f = float(self.angleFrontAdjust1.slider.minSlider.value()) * 0.18
+            self.angleFrontAdjust.slider.maxSlider.setValue(self.angleFrontAdjust1.slider.maxSlider.value())
+            self.angleFrontAdjust.slider.minSlider.setValue(self.angleFrontAdjust1.slider.minSlider.value())
+            self.imageFrontBox1.angle = d + f
+        self.imageFrontBox1.pointInit()
+        self.update()
+
+    def slider1_angle1(self):
+        if self.imageBackBox1.scaled_img:
+            d = float(self.angleBackAdjust1.slider.maxSlider.value() - 1) * 18
+            f = float(self.angleBackAdjust1.slider.minSlider.value()) * 0.18
+            self.angleBackAdjust.slider.maxSlider.setValue(self.angleBackAdjust1.slider.maxSlider.value())
+            self.angleBackAdjust.slider.minSlider.setValue(self.angleBackAdjust1.slider.minSlider.value())
+            self.imageBackBox1.angle = d + f
         self.imageBackBox1.pointInit()
         self.update()
 
