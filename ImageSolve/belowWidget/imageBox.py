@@ -34,6 +34,10 @@ class ImageBox(QWidget):
         self.cacheMap.outlineCachePath = img_path
         if os.path.isfile(img_path):
             self.cacheMap.addOriginMap(img_path)
+            self.level = 1
+            self.scale = 0.1
+        else:
+            self.scale = 1
         self.thread = ImageThread(self.cacheMap)
         self.thread.imageGet.connect(self.paintGet)
         # self.img = Image.open(img_path)
@@ -85,17 +89,25 @@ class ImageBox(QWidget):
             tempMap = self.cacheMap.pixmap.copy()
             tempList = self.cacheMap.order.copy()
             for i in range(len(tempList)):
-                x, y = convertStrToNumber(tempList[i][1]), -convertStrToNumber(tempList[i][2])
-                # xx, yy = ox_to_dx(x*256, y*256, self.scale, self.angle, self.point.x(), self.point.y())
-                painter.drawPixmap(QPoint(x * 256 + self.point.x(), y * 256 + self.point.y()),
-                                   tempMap[tempList[i]])
+                if tempList[i][0] == str(self.level):
+                    x, y = convertStrToNumber(tempList[i][1]), -convertStrToNumber(tempList[i][2])
+                    # xx, yy = ox_to_dx(x*256, y*256, self.scale, self.angle, self.point.x(), self.point.y())
+                    painter.drawPixmap(QPoint(x * 256 + self.point.x(), y * 256 + self.point.y()),
+                                       tempMap[tempList[i]])
+                else:
+                    continue
             for j in range(len(self.featureList)):
                 painter.setPen(QPen(QColor(getValueColor(j + 1))))
                 painter.setBrush(QColor(getValueColor(j + 1)))
-                xx, yy = ox_to_dx(self.point.x(), self.point.y(),
-                                  self.scale, self.angle, 0, 0)
-                painter.drawEllipse(QPoint(self.featureList[j][0] + self.point.x(),
-                                           self.featureList[j][1] + self.point.y()), 5/self.scale, 5/self.scale)
+                if self.level == 1:
+                    painter.drawEllipse(QPoint(self.featureList[j][1] + self.point.x(),
+                                               self.featureList[j][2] + self.point.y()), 5/self.scale, 5/self.scale)
+                else:
+                    if self.featureList[j][0] == self.level:
+                        painter.drawEllipse(QPoint(self.featureList[j][1] + self.point.x(),
+                                                   self.featureList[j][2] + self.point.y()), 5 / self.scale, 5 / self.scale)
+                    else:
+                        continue
             painter.end()
             # self.img.crop((left, up, right, down))
 
@@ -137,9 +149,9 @@ class ImageBox(QWidget):
                 # 此处为x', y'点，需通过反向计算得到图上对应的原点
                 dxx, dyy = ox_to_dx(dx, dy, self.scale, self.angle, 0, 0)
                 ox, oy = dx_to_ox(x - dxx, y - dyy, self.scale, self.angle, 0, 0)
-                self.featureList.append((ox, oy))
+                self.featureList.append((self.level, ox, oy))
                 self.repaint()
-                self.featureSignal.emit((ox, oy))
+                self.featureSignal.emit((self.level, ox, oy))
             self.left_click = False
             if not self.thread.isRunning():
                 self.thread.start()
