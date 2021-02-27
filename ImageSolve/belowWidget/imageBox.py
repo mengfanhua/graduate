@@ -1,6 +1,7 @@
 from ImageSolve.config import *
 from ImageSolve.algorithms.xyToXY import dx_to_ox, ox_to_dx
 from ImageSolve.algorithms.tileCombine import convertNumberToStr, convertStrToNumber
+from ImageSolve.algorithms.converterZ import Zconverter
 from ImageSolve.belowWidget.imageThread import ImageThread
 import math, time
 
@@ -107,7 +108,10 @@ class ImageBox(QWidget):
                         painter.drawEllipse(QPoint(self.featureList[j][1] + self.point.x(),
                                                    self.featureList[j][2] + self.point.y()), 5 / self.scale, 5 / self.scale)
                     else:
-                        continue
+                        des_x, des_y = Zconverter(self.featureList[j][0], self.level, self.featureList[j][1],
+                                                  self.featureList[j][2])
+                        painter.drawEllipse(QPoint(des_x + self.point.x(),
+                                                   des_y + self.point.y()), 5 / self.scale, 5 / self.scale)
             painter.end()
             # self.img.crop((left, up, right, down))
 
@@ -155,18 +159,6 @@ class ImageBox(QWidget):
             self.left_click = False
             if not self.thread.isRunning():
                 self.thread.start()
-    """
-    def mouseDoubleClickEvent(self, e):
-        # 此处需要添加记录特征点模块，需要测试
-        if e.button() == Qt.LeftButton and self.scaled_img == 1:
-            x, y = e.pos().x(), e.pos().y()
-            dx, dy = self.point.x(), self.point.y()
-            # 此处为x', y'点，需通过反向计算得到图上对应的原点
-            ox, oy = dx_to_ox(x, y, self.scale, self.angle, dx, dy)
-            self.featureList.append((ox, oy))
-            self.repaint()
-            self.featureSignal.emit((ox, oy))
-    """
 
     def pointInit(self):
         point = self.calculate_cache()
