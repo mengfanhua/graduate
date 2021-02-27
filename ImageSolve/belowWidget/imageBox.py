@@ -143,7 +143,7 @@ class ImageBox(QWidget):
         """
         if e.button() == Qt.LeftButton and self.scaled_img == 1:
             end_time = time.time()
-            if end_time - self.start_time < 0.4:
+            if end_time - self.start_time < 0.2:
                 x, y = self.start_pos.x(), self.start_pos.y()
                 dx, dy = self.point.x(), self.point.y()
                 # 此处为x', y'点，需通过反向计算得到图上对应的原点
