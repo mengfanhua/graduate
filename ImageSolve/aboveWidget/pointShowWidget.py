@@ -17,6 +17,10 @@ class PointShowWidget(QWidget):
         self.area.setWidgetResizable(True)
         self.setLayout(ly)
         self.area.verticalScrollBar().rangeChanged.connect(self.get_last)
+        self.area.horizontalScrollBar().rangeChanged.connect(self.get_last1)
 
     def get_last(self):
         self.area.verticalScrollBar().setValue(self.area.verticalScrollBar().maximum())
+
+    def get_last1(self):
+        self.area.horizontalScrollBar().setValue(self.area.horizontalScrollBar().maximum())
