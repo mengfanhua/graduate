@@ -10,7 +10,7 @@ from ImageSolve.functionWidget.pointWidget import PointWidget
 class MainWindows(QWidget):
     def __init__(self):
         super(MainWindows, self).__init__()
-        self.setFixedSize(QSize(1000, 700))
+        self.setFixedSize(QSize(1300, 700))
         self.openFrontImage = QPushButton("打开前景图")
         self.openBackImage = QPushButton("打开背景图")
         self.sizeFrontAdjust = AdjustWidget()
