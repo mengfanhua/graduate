@@ -93,3 +93,7 @@ It's a tool for image registration.(for graduate)
 2021年2月27日13:00:18 author：Meng
 
 颜色生成方法采用颜色库循环方法，已合并到UI中。
+
+2021年2月27日13:36:40 author：Meng
+
+修复瓦片加载不同层级之间标注点偏移的bug。
