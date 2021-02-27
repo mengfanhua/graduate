@@ -7,6 +7,7 @@ from PIL import Image, ImageQt
 import requests
 import math
 from ImageSolve.algorithms.tileCombine import convertNumberToStr, convertStrToNumber
+from ImageSolve.algorithms.colorGenerate import ColorTranslate, ColorGenerate
 
 
 class CacheMap:
@@ -72,4 +73,4 @@ class CacheMap:
 
 # test
 def getValueColor(value):
-    return "#ff0000"
+    return ColorTranslate(ColorGenerate(value))
