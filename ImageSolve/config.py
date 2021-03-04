@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFileDialog, QStackedLayout, QSlider, QScrollArea, QRadioButton
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFileDialog, QStackedLayout, QSlider, QScrollArea, QRadioButton, QGridLayout
 from PyQt5.Qt import QPixmap, QPoint, Qt, QPainter, QIcon, QColor, QPalette, QPen, QBrush
 from PyQt5.QtCore import QSize, pyqtSignal, QThread
 import os
@@ -8,15 +8,18 @@ import requests
 import math
 from ImageSolve.algorithms.tileCombine import convertNumberToStr, convertStrToNumber
 from ImageSolve.algorithms.colorGenerate import ColorTranslate, ColorGenerate
+from ImageSolve.algorithms.imageGetThread import toDoList, containItem
 
 
 class CacheMap:
-    def __init__(self, size=20, cachePath=None):
+    def __init__(self, thread, size=20, index=0, cachePath=None):
         self.pixmap = {}
         self.order = []
         self.size = size
         self.outlineCachePath = cachePath
+        self.index = index
         self.session = requests.session()
+        self.thread = thread
 
     def addOriginMap(self, path, scale=1):
         # 此处专为普通图片设计，用来对大图进行分割，使其避免显存溢出
@@ -55,16 +58,13 @@ class CacheMap:
         if os.path.exists(os.path.join(self.outlineCachePath, z, x, y + ".png")):
             return os.path.join(self.outlineCachePath, z, x, y + ".png")
         else:
-            try:
-                response = self.session.get("https://maponline2.bdimg.com/tile/?qt=vtile&x={}&y={}&z={}&styles=pl&"
-                                            "udt=20210119&scaler=1&showtext=0".format(x, y, z))
-                if not os.path.exists(os.path.join(self.outlineCachePath, z, x)):
-                    os.makedirs(os.path.join(self.outlineCachePath, z, x))
-                with open(os.path.join(self.outlineCachePath, z, x, y + ".png"), "wb") as f:
-                    f.write(response.content)
-                    f.close()
-                return os.path.join(self.outlineCachePath, z, x, y + ".png")
-            except:
+            if (z, x, y, self.index, self.outlineCachePath) in containItem:
+                return None
+            else:
+                toDoList.append((z, x, y, self.index, self.outlineCachePath))
+                containItem.add((z, x, y, self.index, self.outlineCachePath))
+                if not self.thread.isRunning():
+                    self.thread.start()
                 return None
 
     def __del__(self):
