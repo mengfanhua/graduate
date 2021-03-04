@@ -9,7 +9,7 @@ import math, time
 class ImageBox(QWidget):
     featureSignal = pyqtSignal(tuple)
 
-    def __init__(self):
+    def __init__(self, index, thread):
         super(ImageBox, self).__init__()
         self.img = None
         self.scaled_img = None
@@ -20,10 +20,11 @@ class ImageBox(QWidget):
         self.scale = 0.1
         self.angle = 0
         self.featureList = []
-        self.cacheMap = CacheMap()
+        self.cacheMap = CacheMap(thread, index=index)
         self.thread = ImageThread(self.cacheMap)
         self.level = 3
         self.start_time = None
+        self.index = index
 
     def set_image(self, img_path):
         """
@@ -47,10 +48,10 @@ class ImageBox(QWidget):
         self.pointInit()
 
     def calculate_cache(self):
-        x_min = 500 - 768
-        y_min = 300 - 512
-        x_max = 1536
-        y_max = 1024
+        x_min = -50
+        y_min = -50
+        x_max = 1000
+        y_max = 400
         x_one, y_one = dx_to_ox(x_min, y_min, self.scale, self.angle, self.point.x(), self.point.y())
         x_two, y_two = dx_to_ox(x_min, y_max, self.scale, self.angle, self.point.x(), self.point.y())
         x_three, y_three = dx_to_ox(x_max, y_min, self.scale, self.angle, self.point.x(), self.point.y())
