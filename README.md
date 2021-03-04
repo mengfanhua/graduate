@@ -102,3 +102,7 @@ It's a tool for image registration.(for graduate)
 
 添加了纵向的对比布局，修改了图片加载线程的使用。
 
+2021年3月4日22:45:24 author：Meng
+
+添加了图片上传函数，正在设计合成后图片的展示方法，正在申请域名备案。
+域名为image-registration.ltd，ip地址为82.156.1.179。
