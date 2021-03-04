@@ -97,3 +97,8 @@ It's a tool for image registration.(for graduate)
 2021年2月27日13:36:40 author：Meng
 
 修复瓦片加载不同层级之间标注点偏移的bug。
+
+2021年3月4日20:06:56 author：Meng
+
+添加了纵向的对比布局，修改了图片加载线程的使用。
+
