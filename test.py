@@ -1,3 +1,11 @@
-from ImageSolve.algorithms.converterZ import Zconverter
+from ImageSolve.algorithms.generateKey import generate_key
+from ImageSolve.algorithms.updateImage import update_image
 
-print(Zconverter(3, 4, 250, 256-109))
+
+if __name__ == '__main__':
+    path = "C:\\Users\\meng\\Desktop\\map\\3\\0\\0.png"
+    z = "3"
+    x = "0"
+    y = "0"
+    key = generate_key("mengfanhua", "mengfanhua")
+    print(update_image(path, z, x, y, key))
