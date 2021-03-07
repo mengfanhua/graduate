@@ -4,7 +4,7 @@ import tornado.ioloop
 import tornado.web
 import platform
 import json
-import solve
+from . import solve
 
 
 settings = {
