@@ -7,5 +7,6 @@ if __name__ == '__main__':
     z = "3"
     x = "0"
     y = "0"
-    key = generate_key("mengfanhua", "mengfanhua")
-    print(update_image(path, z, x, y, key))
+    key = generate_key("admin", "admin")
+    print(key)
+    # print(update_image(path, z, x, y, key))
