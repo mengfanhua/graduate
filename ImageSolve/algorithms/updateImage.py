@@ -18,6 +18,20 @@ def update_image(path, z, x, y, key):
         return False
 
 
+def validate_key(z, x, y, key):
+    datas = {"x": x, "y": y, "z": z, "key": key}
+    with open("./Resources/host", "r", encoding="utf-8") as f:
+        host = f.read()
+        f.close()
+    response = requests.post(host + "/validate", data=datas)
+    data = response.text
+    response.close()
+    if data == "true":
+        return True
+    else:
+        return False
+
+
 if __name__ == '__main__':
     path = "C:\\Users\\meng\\Desktop\\map\\3\\0\\0.png"
     z = "3"
