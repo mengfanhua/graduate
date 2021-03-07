@@ -48,8 +48,8 @@ class ImageBox(QWidget):
         self.pointInit()
 
     def calculate_cache(self):
-        x_min = -50
-        y_min = -50
+        x_min = -150
+        y_min = -150
         x_max = 1000
         y_max = 400
         x_one, y_one = dx_to_ox(x_min, y_min, self.scale, self.angle, self.point.x(), self.point.y())
