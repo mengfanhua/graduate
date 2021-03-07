@@ -1,16 +1,29 @@
-import requests
 import urllib
 import json
-import math
+from ImageSolve.config import *
 
 
-def get_location(city):
-    city = urllib.parse.quote(city)
-    res = requests.get("https://apis.map.qq.com/jsapi?qt=geoc&addr={}&output=jsonp&pf=jsapi&ref=jsapi".format(city))
-    data = json.loads(res.text)
-    print(data)
-    res.close()
-    return data["detail"]["pointx"], data["detail"]["pointy"]
+class LocationThread(QThread):
+    finish = pyqtSignal(str, str)
+
+    def __init__(self):
+        super(LocationThread, self).__init__()
+        self.city = None
+
+    def set_city(self, city):
+        self.city = city
+
+    def run(self):
+        city = urllib.parse.quote(self.city)
+        try:
+            res = requests.get("https://apis.map.qq.com/jsapi?qt=geoc&addr={}&output=jsonp&pf=jsapi&ref=jsapi".format(city))
+            data = json.loads(res.text)
+            print(data)
+            res.close()
+            x, y = data["detail"]["pointx"], data["detail"]["pointy"]
+            self.finish.emit(x, y)
+        except:
+            self.finish.emit("", "")
 
 
 class BDMercatorToLonLatAll:
