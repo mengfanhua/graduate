@@ -6,6 +6,7 @@ from ImageSolve.aboveWidget.pointShowWidget import PointShowWidget
 from ImageSolve.config import *
 from ImageSolve.functionWidget.pointWidget import PointWidget
 from ImageSolve.algorithms.imageGetThread import ImageGetThread
+from ImageSolve.algorithms.getLocation import LocationThread, BDMercatorToLonLatAll
 
 
 class MainWindows(QWidget):
@@ -13,7 +14,10 @@ class MainWindows(QWidget):
         super(MainWindows, self).__init__()
         self.imageGetThread = ImageGetThread()
         self.imageGetThread.touch.connect(self.divide_imagebox)
-
+        self.locationThread = LocationThread()
+        self.locationThread.finish.connect(self.finishEvent)
+        self.locationThread1 = LocationThread()
+        self.locationThread1.finish.connect(self.finishEvent1)
         self.setFixedSize(QSize(1300, 700))
         self.openFrontImage = QPushButton("打开前景图")
         self.openBackImage = QPushButton("打开背景图")
@@ -105,8 +109,47 @@ class MainWindows(QWidget):
         self.imageBackBox.featureList = self.imageBackBox1.featureList
 
         self.changeLayout.clicked.connect(self.change_layout)
+        self.nextPage.clicked.connect(self.get_position)
+        self.nextPage1.clicked.connect(self.get_position1)
         self.flag_exchange()
         self.flag_exchange()
+
+    def get_position(self):
+        if self.imageBackBox.scaled_img is not None and os.path.isfile(self.imageBackBox.img) is False:
+            self.lastPage1.setText(self.lastPage.text())
+            self.locationThread.set_city(self.lastPage.text())
+            if not self.locationThread.isRunning():
+                self.locationThread.start()
+            else:
+                self.lastPage.setText("访问速度过快！")
+
+    def finishEvent(self, x, y):
+        if x == "":
+            self.lastPage.setText("error")
+        else:
+            MClon, MClat = BDMercatorToLonLatAll().convertLonLatToMC(float(x), float(y))
+            xx, yy = MClon/math.pow(2, 18-self.imageBackBox.level), MClat/math.pow(2, 18-self.imageBackBox.level)
+            self.imageBackBox.point = QPoint(250-int(xx), int(yy)-6)
+            self.imageBackBox.pointInit()
+
+    def get_position1(self):
+        if self.imageBackBox1.scaled_img is not None and os.path.isfile(self.imageBackBox1.img) is False:
+            self.lastPage.setText(self.lastPage1.text())
+            self.locationThread1.set_city(self.lastPage1.text())
+            if not self.locationThread1.isRunning():
+                self.locationThread1.start()
+            else:
+                self.lastPage1.setText("访问速度过快！")
+
+    def finishEvent1(self, x, y):
+        if x == "":
+            self.lastPage1.setText("error")
+        else:
+            MClon, MClat = BDMercatorToLonLatAll().convertLonLatToMC(float(x), float(y))
+            xx, yy = MClon / math.pow(2, 18 - self.imageBackBox1.level), MClat / math.pow(2,
+                                                                                         18 - self.imageBackBox1.level)
+            self.imageBackBox1.point = QPoint(250-int(xx), int(yy)-6)
+            self.imageBackBox1.pointInit()
 
     def divide_imagebox(self, value):
         if value == 1:
@@ -409,5 +452,3 @@ class MainWindows(QWidget):
         self.imageBackBox1.featureList.pop(value - 1)
         self.pointBackContent1.layout.itemAt(value - 1).widget().deleteLater()
         self.repaint()
-
-
