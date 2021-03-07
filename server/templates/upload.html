@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="icon" href="/static/test/img/favicon.png" type="image/png">
+	<title>地图瓦片叠加展示系统</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="/static/test/css/bootstrap.css">
+	<link rel="stylesheet" href="/static/test/vendors/linericon/style.css">
+	<link rel="stylesheet" href="/static/test/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/static/test/vendors/owl-carousel/owl.carousel.min.css">
+	<link rel="stylesheet" href="/static/test/vendors/lightbox/simpleLightbox.css">
+	<link rel="stylesheet" href="/static/test/vendors/nice-select/css/nice-select.css">
+	<link rel="stylesheet" href="/static/test/vendors/animate-css/animate.css">
+	<!-- main css -->
+	<link rel="stylesheet" href="/static/test/css/style.css">
+	<style type="text/css">
+        .pagination-bar {
+            font-size: 0px;
+           	bottom: 20%;
+            padding: 20px 0px;
+            text-align: center;
+        }
+
+        .pagination-bar a {
+            display: inline-block;
+            padding: 5px 7.5px;
+            text-decoration: none;
+            min-width: 30px;
+            font-size: 16px;
+        }
+
+        .pagination-bar button {
+            display: inline-block;
+            padding: 5px 7.5px;
+            text-decoration: none;
+            min-width: 30px;
+            font-size: 16px;
+            border-radius: 15px 15px 15px 15px;
+        }
+
+        .pagination-bar a:not(.disabled) {
+            background-color: #FFF;
+            color: #666;
+            border: 1px solid #BBBBBB;
+        }
+
+        .pagination-bar a.disabled {
+            background-color: #666;
+            color: #FFF;
+            border: 1px solid #444;
+        }
+
+        .page-prev {
+            border-radius: 15px 0px 0px 15px;
+        }
+
+        .page-next {
+            border-radius: 0px 15px 15px 0px
+        }
+
+        .pagination-bar span:not(.active) {
+            display: inline-block;
+            padding: 5px 7.5px;
+            font-size: 16px;
+        }
+        .button-load{
+            /*background-color: #4CAF50;  Green */
+            border: none;
+            /*color: white;*/
+            width: 10%;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+
+        }
+        .button-load:hover{color: blue;}
+    </style>
+	<script type="text/javascript">  
+  
+  
+window.onload = function(){  
+    var input = document.getElementById("file_input");  
+    var result,div;  
+
+    var dataArr = { "data" : [], "key" : "{{key}}"};  //直接传base64数据
+    var fd = null;  //FormData方式发送请求  
+   
+    if(typeof FileReader==='undefined'){  
+        result.innerHTML = "抱歉，你的浏览器不支持 FileReader";  
+        input.setAttribute('disabled','disabled');  
+    }else{  
+        input.addEventListener('change',function readFile(event){
+            fd = new FormData();  
+            var hand = event.target;
+            var iLen = hand.files.length;
+        for(var i=0;i<iLen;i++){  
+            var reader = new FileReader();  
+            fd.append(i,hand.files[i]);  
+            reader.readAsDataURL(hand.files[i]);  //转成base64  
+
+            reader.fileName = hand.files[i].webkitRelativePath; 
+            //console.log(fileName);
+	    reader.onload = function(e){
+            var cdr = this.result;
+		var filenameshow = this.fileName;
+                    var imgMsg = {  
+                        base64 : cdr,  //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+			filename: filenameshow
+                };
+                    dataArr.data.push(imgMsg);   
+				if(i == 0){
+				document.getElementById("newpage").innerHTML = "<div class=\"col-lg-3 col-sm-6\"><div class=\"single_instructor\"><div class=\"author\"><img src=\""+this.result+"\" alt=\"\" style=\"width:183px;height:150px;\" ></div><div>"+ this.fileName+"</div></div></div>";
+				}
+				else{
+				document.getElementById("newpage").innerHTML = document.getElementById("newpage").innerHTML + "<div class=\"col-lg-3 col-sm-6\"><div class=\"single_instructor\"><div class=\"author\"><img src=\""+this.result+"\" alt=\"\" style=\"width:183px;height:150px;\"></div><div>"+ this.fileName +"</div></div></div>";
+				}		
+            }  
+        }  
+          
+          
+    },false);  
+    }　　　　　//handler  
+      
+      
+    function send(){ 
+        document.getElementById("error").innerHTML = "正在上传,请不要关闭页面...";
+        $.ajax({  
+            url : '/upload_file',  
+            type : 'post',  
+            data : dataArr,
+            dataType : 'json',
+            //processData: false,   //用FormData传fd时需有这两项  
+            //contentType: false,  
+            success : function(data){
+                document.getElementById("error").innerHTML = "";
+                alert("上传成功！");
+          　}})  
+    }
+var oBtn = document.getElementById("sub");  
+    oBtn.onclick=function(){  
+            if(!input.files.length){  
+                return alert('请先选择文件');  
+            }  
+        send();  
+    } 
+/*  
+ 用ajax发送fd参数时要告诉jQuery不要去处理发送的数据，  
+ 不要去设置Content-Type请求头才可以发送成功，否则会报“Illegal invocation”的错误，  
+ 也就是非法调用，所以要加上“processData: false,contentType: false,”  
+ * */  
+  }
+              
+</script>  
+
+</head>
+
+<body>
+
+	<!--================ Start Header Menu Area =================-->
+	<header class="header_area">
+		<div class="header-top">
+			<div class="container">
+				<div class="row align-items-center">
+					<div class="col-lg-6 col-sm-6 col-4 header-top-left">
+					
+				
+						<span class="lnr lnr-envelope"></span>
+						<span class="text">
+							<span class="text">www.image-registration.ltd</span>
+						</span>
+						
+					</div>
+					<div class="col-lg-6 col-sm-6 col-8 header-top-right">
+						<a href="#" class="text-uppercase">地图瓦片叠加展示系统</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="main_menu">
+			
+
+			<nav class="navbar navbar-expand-lg navbar-light">
+				<div class="container">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<a class="navbar-brand logo_h" href="index.html"><img src="/static/test/img/logo.png" alt=""></a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+						<ul class="nav navbar-nav menu_nav ml-auto">
+							<li class="nav-item active"><a class="nav-link" href="/">首页</a></li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">图片上传</a>
+								<ul class="dropdown-menu">
+                                    <li class="nav-item"><a class="nav-link" href="/login_1">图片上传</a></li>
+									</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">图片展示</a>
+								<ul class="dropdown-menu">
+                                    <li class="nav-item"><a class="nav-link" href="/login_2">图片展示</a></li>
+                                </ul>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!--================ End Header Menu Area =================-->
+    <!--================Home Banner Area =================-->
+    <section class="banner_area2">
+        <div class="banner_inner d-flex align-items-center">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="banner_content text-center">
+                            <h2>图片上传</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--================End Home Banner Area =================-->
+
+
+    <!--================ Start Instructor Area =================-->
+    <div class="instructors_area lite_bg">
+        <div class="container">
+             <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="main_title">
+						<div>
+&emsp;&emsp;&emsp;<label>请选择上传的图片文件夹：</label>
+                <input type="file" id="file_input" webkitdirectory multiple/> <!--用input标签并选择type=file，记得带上multiple，不然就只能单选图片了-->  
+              </div><br / ><div> <button id="sub">提交</button></div><br / ><br />
+<div>请务必等待所有图片加载完成后上传！若等待时间过长，请尝试使用子文件夹分次上传！<br/>
+注：请务必保证文件名格式为：z/x/y.png，如若路径不全，图片将上传失败！</div>
+<div id="error"></div>
+                    </div>
+                </div>
+            </div> 
+            <div class="row" id="newpage">
+                <!-- single-instructor -->
+		
+            </div>
+        </div>
+    </div>
+    <!--================ End Instructor Area =================-->
+
+
+
+
+    <!--================ Start PageNavigator Area =================-->
+
+    <!--================ End PageNavigator Area =================-->
+
+
+
+
+
+
+<!--================ Start footer Area  =================-->
+    <footer class="footer-area section_gap">
+        <div class="container">
+            
+            <div class="row footer-bottom d-flex justify-content-between">
+                <p class="col-lg-81 col-sm-12 footer-text m-0 text-white" style="text-align: center;">Copyright © 2021  &nbsp;&nbsp;&nbsp;&nbsp; 地图瓦片叠加展示系统</p>
+                
+            </div>
+        </div>
+    </footer>
+    <!--================ End footer Area  =================-->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/static/test/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/test/js/popper.js"></script>
+    <script src="/static/test/js/bootstrap.min.js"></script>
+    <script src="/static/test/js/stellar.js"></script>
+    <script src="/static/test/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+    <script src="/static/test/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="/static/test/js/owl-carousel-thumb.min.js"></script>
+    <script src="/static/test/js/jquery.ajaxchimp.min.js"></script>
+    <script src="/static/test/vendors/counter-up/jquery.counterup.js"></script>
+    <script src="/static/test/js/mail-script.js"></script>
+    <!--gmaps Js-->
+   <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>-->
+    <script src="/static/test/js/gmaps.min.js"></script>
+    <script src="/static/test/js/theme.js"></script>
+</body>
+
+</html>
