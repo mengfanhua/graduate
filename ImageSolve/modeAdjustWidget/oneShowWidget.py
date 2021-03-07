@@ -7,12 +7,12 @@ class OneShowWidget(QWidget):
     def __init__(self, openFrontImage, openBackImage, sizeFrontAdjust,
                  sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                  lastPage, nextPage, imageFrontBox, imageBackBox,
-                 exchangeShowMode, imagePaste, exchangeFrontBack, point1, point2, radio):
+                 exchangeShowMode, imagePaste, exchangeFrontBack, point1, point2, radio, comeback):
         super(OneShowWidget, self).__init__()
         self.aboveWidget = AboveWidget(openFrontImage, openBackImage, sizeFrontAdjust,
                                        sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                                        lastPage, nextPage, exchangeShowMode, imagePaste,
-                                       exchangeFrontBack, point1, point2, radio)
+                                       exchangeFrontBack, point1, point2, radio, comeback)
         self.imageBox = BelowWidget(imageFrontBox, imageBackBox)
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.aboveWidget)

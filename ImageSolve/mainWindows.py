@@ -24,13 +24,14 @@ class MainWindows(QWidget):
         self.exchangeBack = QPushButton("front")
         self.pointFrontContent = PointShowWidget()
         self.pointBackContent = PointShowWidget()
-        self.lastPage = QPushButton("上一页")
-        self.nextPage = QPushButton("下一页")
+        self.lastPage = QLineEdit()
+        self.nextPage = QPushButton("城市定位")
         self.exchangeShowMode = QPushButton("切换显示模式")
         self.imagePaste = QPushButton("合成")
         self.imageFrontBox = ImageBox(1, self.imageGetThread)
         self.imageBackBox = ImageBox(2, self.imageGetThread)
         self.radioButton = QRadioButton("加载地图瓦片（百度）")
+        self.comeback = QPushButton("返回")
         # 同一组件不可同时放置在两个布局中，故复制一份组件，并在监听器中同步操作两个界面
         self.openFrontImage1 = QPushButton("打开前景图")
         self.openBackImage1 = QPushButton("打开背景图")
@@ -40,14 +41,15 @@ class MainWindows(QWidget):
         self.angleBackAdjust1 = AdjustWidget()
         self.pointFrontContent1 = PointShowWidget()
         self.pointBackContent1 = PointShowWidget()
-        self.lastPage1 = QPushButton("上一页")
-        self.nextPage1 = QPushButton("下一页")
+        self.lastPage1 = QLineEdit()
+        self.nextPage1 = QPushButton("城市定位")
         self.exchangeShowMode1 = QPushButton("切换显示模式")
         self.imagePaste1 = QPushButton("合成")
         self.imageFrontBox1 = ImageBox(3, self.imageGetThread)
         self.imageBackBox1 = ImageBox(4, self.imageGetThread)
         self.radioButton1 = QRadioButton("加载地图瓦片（百度）")
         self.changeLayout = QPushButton("更改布局")
+        self.comeback1 = QPushButton("返回")
         self.layout = QStackedLayout()
         self.layout.setStackingMode(QStackedLayout.StackOne)
         self.oneShow = OneShowWidget(self.openFrontImage, self.openBackImage,
@@ -56,14 +58,14 @@ class MainWindows(QWidget):
                                      self.lastPage, self.nextPage, self.imageFrontBox,
                                      self.imageBackBox, self.exchangeShowMode,
                                      self.imagePaste, self.exchangeBack, self.pointFrontContent,
-                                     self.pointBackContent, self.radioButton)
+                                     self.pointBackContent, self.radioButton, self.comeback)
         self.twoShow = TwoShowWidget(self.openFrontImage1, self.openBackImage1,
                                      self.sizeFrontAdjust1, self.sizeBackAdjust1,
                                      self.angleFrontAdjust1, self.angleBackAdjust1,
                                      self.lastPage1, self.nextPage1, self.imageFrontBox1,
                                      self.imageBackBox1, self.exchangeShowMode1,
                                      self.imagePaste1, self.pointFrontContent1,
-                                     self.pointBackContent1, self.radioButton1, self.changeLayout)
+                                     self.pointBackContent1, self.radioButton1, self.changeLayout, self.comeback1)
         self.layout.addWidget(self.oneShow)
         self.layout.addWidget(self.twoShow)
         self.setLayout(self.layout)
@@ -123,7 +125,7 @@ class MainWindows(QWidget):
                                   self.lastPage1, self.nextPage1, self.imageFrontBox1,
                                   self.imageBackBox1, self.exchangeShowMode1,
                                   self.imagePaste1, self.pointFrontContent1,
-                                  self.pointBackContent1, self.radioButton1, self.changeLayout)
+                                  self.pointBackContent1, self.radioButton1, self.changeLayout, self.comeback1)
         self.repaint()
 
     def radioChanged(self):
