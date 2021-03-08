@@ -6,6 +6,17 @@ from ImageSolve.algorithms.imageTranslate import image_translate, validate
 import time
 
 
+def  test_type_image(ori, des):
+    ori_image = Image.open(ori)
+    des_image = Image.open(des)
+    try:
+        ori_input = cv2.cvtColor(np.asarray(ori_image), cv2.COLOR_RGB2GRAY)
+        des_input = cv2.cvtColor(np.asarray(des_image), cv2.COLOR_RGB2GRAY)
+        return True
+    except:
+        return False
+
+
 def image_iter_solve(ori, des, min_xy=None, max_xy=None,
                      min_xy1=None, max_xy1=None, loss=None):
     """
