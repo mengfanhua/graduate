@@ -11,6 +11,7 @@ class UploadWidget(QWidget):
         self.setWindowTitle("图片上传")
         self.label = QLabel("选择文件夹：")
         self.edit = QLineEdit()
+        self.edit.setEnabled(False)
         self.select = QPushButton("...")
         self.label1 = QLabel("账号：")
         self.username = QLineEdit()
