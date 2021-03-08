@@ -1,5 +1,5 @@
 from ImageSolve.config import *
-from ImageSolve.algorithms.imageFastSolve import image_iter_solve
+from ImageSolve.algorithms.imageFastSolve import image_iter_solve, test_type_image
 from ImageSolve.algorithms.imageTranslate import image_translate
 from ImageSolve.algorithms.combineImage import combine_image
 
@@ -21,13 +21,17 @@ class MultiImageThread(QThread):
 
     def run(self):
         if os.path.isfile(self.img1):
-            self.message.emit("正在生成标注点。。。\n")
-            ori_key, des_key, _ = image_iter_solve(self.img1, self.img2)
-            self.message.emit("生成完成，正在进行匹配计算。。。\n")
-            alpha, k, dx, dy = image_translate(ori_key, des_key)
-            self.message.emit("匹配完成，正在进行合成。。。\n")
-            a, _ = combine_image(self.img1, self.img2, k, alpha, dx, dy)
-            a.save(self.img3)
+            self.message.emit("正在验证图片格式。。。\n")
+            if not test_type_image(self.img1, self.img2):
+                self.message.emit("验证失败，图片内部为不支持的格式！\n")
+            else:
+                self.message.emit("正在生成标注点。。。\n")
+                ori_key, des_key, _ = image_iter_solve(self.img1, self.img2)
+                self.message.emit("生成完成，正在进行匹配计算。。。\n")
+                alpha, k, dx, dy = image_translate(ori_key, des_key)
+                self.message.emit("匹配完成，正在进行合成。。。\n")
+                a, _ = combine_image(self.img1, self.img2, k, alpha, dx, dy)
+                a.save(self.img3)
             self.message.emit("合成完成。\n\n")
         else:
             imgList1 = os.listdir(self.img1)
@@ -35,6 +39,10 @@ class MultiImageThread(QThread):
             for i in range(len(imgList1)):
                 self.message.emit("正在验证第" + str(i+1) + "组标注点。。。\n")
                 if imgList1[i] in imgList2:
+                    self.message.emit("正在验证图片格式。。。\n")
+                    if not test_type_image(self.img1 + imgList1[i], self.img2 + imgList1[i]):
+                        self.message.emit("验证失败，图片内部为不支持的格式！\n")
+                        continue
                     self.message.emit("正在生成第" + str(i + 1) + "组标注点。。。\n")
                     ori_key, des_key, _ = image_iter_solve(self.img1 + imgList1[i], self.img2 + imgList1[i])
                     self.message.emit("正在计算第" + str(i + 1) + "组标注点偏移。。。\n")
