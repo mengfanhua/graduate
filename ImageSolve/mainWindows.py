@@ -10,6 +10,9 @@ from ImageSolve.algorithms.getLocation import LocationThread, BDMercatorToLonLat
 
 
 class MainWindows(QWidget):
+    backsignal = pyqtSignal()
+    combinesignal = pyqtSignal(str, str, list, list)
+
     def __init__(self):
         super(MainWindows, self).__init__()
         self.imageGetThread = ImageGetThread()
@@ -111,8 +114,16 @@ class MainWindows(QWidget):
         self.changeLayout.clicked.connect(self.change_layout)
         self.nextPage.clicked.connect(self.get_position)
         self.nextPage1.clicked.connect(self.get_position1)
+        self.comeback.clicked.connect(self.backEvent)
+        self.comeback1.clicked.connect(self.backEvent)
+        self.imagePaste.clicked.connect(self.combine)
+        self.imagePaste1.clicked.connect(self.combine)
         self.flag_exchange()
         self.flag_exchange()
+
+    def backEvent(self):
+        self.hide()
+        self.backsignal.emit()
 
     def get_position(self):
         if self.imageBackBox.scaled_img is not None and os.path.isfile(self.imageBackBox.img) is False:
@@ -452,3 +463,11 @@ class MainWindows(QWidget):
         self.imageBackBox1.featureList.pop(value - 1)
         self.pointBackContent1.layout.itemAt(value - 1).widget().deleteLater()
         self.repaint()
+
+    def combine(self):
+        if len(self.imageFrontBox.featureList) < 3 or len(self.imageBackBox.featureList) < 3:
+            QMessageBox.information(self, "error", "至少选择三对标注点！")
+        else:
+            self.hide()
+            self.combinesignal.emit(self.imageFrontBox.img, self.imageBackBox.img,
+                                    self.imageFrontBox.featureList, self.imageBackBox.featureList)
