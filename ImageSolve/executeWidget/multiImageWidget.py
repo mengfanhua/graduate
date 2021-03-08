@@ -41,7 +41,14 @@ class MultiImageThread(QThread):
                     alpha, k, dx, dy = image_translate(ori_key, des_key)
                     self.message.emit("正在合成第" + str(i + 1) + "组图片。。。\n")
                     a, _ = combine_image(self.img1 + imgList1[i], self.img2 + imgList1[i], k, alpha, dx, dy)
-                    a.save(self.img3 + imgList1[i])
+                    name = ".".join(imgList1[i].split(".")[:-1])
+                    if os.path.exists(self.img3 + name + ".png"):
+                        order = 1
+                        while os.path.exists(self.img3 + name + str(order) + ".png"):
+                            order += 1
+                        a.save(self.img3 + name + str(order) + ".png")
+                    else:
+                        a.save(self.img3 + name + ".png")
                     self.message.emit("第" + str(i + 1) + "组图片合成完成。\n\n")
                 else:
                     self.message.emit("没有与第" + str(i + 1) + "组相同名称的图片。\n\n")
