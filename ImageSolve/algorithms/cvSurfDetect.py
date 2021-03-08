@@ -1,4 +1,3 @@
-from matplotlib import pyplot as plt
 from imagedt.decorator import time_cost
 import cv2
 import time
