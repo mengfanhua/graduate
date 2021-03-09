@@ -6,6 +6,7 @@ from ImageSolve.uploadWidget.uploadWidget import UploadWidget
 from ImageSolve.combineWidget.combineWidget import CombineWidget
 from ImageSolve.executeWidget.multiImageWidget import MultiImageWidget
 from ImageSolve.executeWidget.singleImgeWidget import SingleImageWidget
+from ImageSolve.executeWidget.UploadImageWidget import UploadImageWidget
 
 
 if __name__ == '__main__':
@@ -17,6 +18,7 @@ if __name__ == '__main__':
     combine = CombineWidget()
     oneExecute = MultiImageWidget()
     twoExecute = SingleImageWidget()
+    threeExecute = UploadImageWidget()
 
     enter.auto.connect(auto.show)
     enter.hand.connect(hand.show)
@@ -34,6 +36,9 @@ if __name__ == '__main__':
 
     auto.combinesignal.connect(oneExecute.come)
     oneExecute.backsignal.connect(auto.show)
+
+    upload.combinesignal.connect(threeExecute.come)
+    threeExecute.backsignal.connect(upload.show)
 
     enter.show()
     app.exec_()
