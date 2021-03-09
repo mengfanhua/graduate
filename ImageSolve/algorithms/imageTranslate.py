@@ -6,8 +6,12 @@ def image_translate(origin, destination):
     """
     :param origin:[[x1, y1], [x2, y2], ...]
     :param destination: [[x1', y1'], [x2', y2'], ...]
-    :return: k, alpha, dx, dy
+    :return: alpha, k, dx, dy
     """
+    if len(origin) == 0:
+        return 0, 0, 0, 0
+    elif len(origin) == 1:
+        return 0, 1, destination[0][0] - origin[0][0], destination[0][1] - origin[0][1]
     ori = np.array(origin, dtype=np.float64).T
     des = np.array(destination, dtype=np.float64).T
     ori_x = ori[0]
