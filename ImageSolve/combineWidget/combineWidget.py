@@ -4,6 +4,7 @@ from ImageSolve.autoRegistrationWidget.autoRegistrationWidget import HBoxWidget
 
 class CombineWidget(QWidget):
     backsignal = pyqtSignal()
+    combinesignal = pyqtSignal(str, str, list, list, str, int, int)
 
     def __init__(self):
         super(CombineWidget, self).__init__()
@@ -15,6 +16,7 @@ class CombineWidget(QWidget):
         self.setWindowTitle("参数配置")
         self.label = QLabel("请选择目的文件夹：")
         self.edit = QLineEdit()
+        self.edit.setEnabled(False)
         self.select = QPushButton("...")
         self.oneWidget = HBoxWidget(self.edit, self.select, 4, 1)
         self.label1 = QLabel("请选择合成瓦片等级范围：（3-19）")
@@ -50,10 +52,14 @@ class CombineWidget(QWidget):
         self.spin1.valueChanged.connect(self.spinChanged)
         self.spin2.valueChanged.connect(self.spinChanged1)
         self.back.clicked.connect(self.backEvnet)
+        self.ok.clicked.connect(self.combine)
 
     def open_image(self):
-        img_name = QFileDialog.getExistingDirectory(self, "Open a Dir")
-        self.edit.setText(img_name)
+        if os.path.isfile(self.img2):
+            img_name, _ = QFileDialog.getSaveFileName(self, "Save Image File", filter="*.png")
+        else:
+            img_name = QFileDialog.getExistingDirectory(self, "Open a Dir")
+            self.edit.setText(img_name)
 
     def spinChanged(self):
         if self.spin1.value() > self.spin2.value():
@@ -77,3 +83,21 @@ class CombineWidget(QWidget):
         else:
             self.sonWidget.setEnabled(True)
         self.show()
+
+    def combine(self):
+        if self.edit.text() == "":
+            QMessageBox.information(self, "error", "路径不可为空！")
+        elif os.path.isfile(self.img2):
+            a = self.edit.text()
+            self.hide()
+            self.combinesignal.emit(self.img1, self.img2, self.featureList1, self.featureList2, a, 0, 0)
+        else:
+            a = self.edit.text()
+            asd = os.listdir(a)
+            if len(asd) == 0:
+                b = self.spin1.value()
+                c = self.spin2.value()
+                self.hide()
+                self.combinesignal.emit(self.img1, self.img2, self.featureList1, self.featureList2, a, b, c)
+            else:
+                QMessageBox.information(self, "error", "该文件夹非空！")
