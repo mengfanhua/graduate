@@ -90,8 +90,11 @@ class AutoRegistrationWidget(QWidget):
         a = self.edit.text()
         b = self.edit2.text()
         c = self.edit3.text()
-        self.hide()
-        self.combinesignal.emit(a, b, c)
+        if a == "" or b == "" or c == "":
+            QMessageBox.information(self, "error", "路径不可为空！")
+        else:
+            self.hide()
+            self.combinesignal.emit(a, b, c)
 
 
 if __name__ == '__main__':
