@@ -14,8 +14,12 @@ def combine_image(front_image_path, back_image_path, k, alpha, dx, dy):
     :param dy: offset of y
     :return: combined image and origin point of background image on new image
     """
+    if str(type(back_image_path)) == "<class 'str'>":
+        back_image = Image.open(back_image_path)
+    else:
+        back_image = back_image_path
     front_image = Image.open(front_image_path)
-    back_image = Image.open(back_image_path)
+    # back_image = Image.open(back_image_path)
     front = front_image.convert("RGBA")
     back = back_image.convert("RGBA")
     f_x, f_y = front.size
