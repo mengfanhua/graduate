@@ -1,9 +1,11 @@
 from ImageSolve.config import *
 from ImageSolve.autoRegistrationWidget.autoRegistrationWidget import HBoxWidget
+from ImageSolve.algorithms.generateKey import generate_key
 
 
 class UploadWidget(QWidget):
     backsignal = pyqtSignal()
+    combinesignal = pyqtSignal(str, str)
 
     def __init__(self):
         super(UploadWidget, self).__init__()
@@ -38,6 +40,7 @@ class UploadWidget(QWidget):
         self.setLayout(self.layout)
         self.select.clicked.connect(self.open_image)
         self.back.clicked.connect(self.comeback)
+        self.ok.clicked.connect(self.combine)
 
     def open_image(self):
         img_name = QFileDialog.getExistingDirectory(self, "Open a Dir")
@@ -49,6 +52,14 @@ class UploadWidget(QWidget):
 
     def set_value(self, s):
         self.edit.setText(s)
+
+    def combine(self):
+        if self.edit.text() == "" or self.username.text() == "" or self.password.text() == "":
+            QMessageBox.information(self, "error", "输入框不可为空！")
+        else:
+            key = generate_key(self.username.text(), self.password.text())
+            self.hide()
+            self.combinesignal.emit(self.edit.text(), key)
 
 
 if __name__ == '__main__':
