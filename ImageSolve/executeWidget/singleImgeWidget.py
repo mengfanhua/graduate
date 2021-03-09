@@ -41,22 +41,22 @@ class SingleImageThread(QThread):
             a.save(self.output)
         else:
             front_image = Image.open(self.img1)
-            front = front_image.convert("RGBA")
+            fronts = front_image.convert("RGBA")
             for i in range(self.below, self.above + 1):
                 self.message.emit("正在转换第" + str(i) + "层级的标注点。。。\n")
                 des_key = exchangeTile(self.des_key, i)
                 self.message.emit("正在计算第" + str(i) + "层级的参数。。。\n")
                 alpha, k, dx, dy = image_translate(ori_key, des_key)
-                f_x, f_y = front.size
-                front = front.resize((int(f_x * k), int(f_y * k)), Image.ANTIALIAS)  # 此处放缩尽可能放大，否则会损失精度，必要时可放大背景图
+                f_x, f_y = fronts.size
+                front = fronts.resize((int(f_x * k), int(f_y * k)), Image.ANTIALIAS)  # 此处放缩尽可能放大，否则会损失精度，必要时可放大背景图
                 front = front.rotate(-alpha, expand=True)
                 nf_x, nf_y = front.size
                 off_x = k * math.cos(math.radians(alpha)) * f_x / 2 - k * math.sin(math.radians(alpha)) * f_y / 2 - nf_x / 2
                 off_y = k * math.sin(math.radians(alpha)) * f_x / 2 + k * math.cos(math.radians(alpha)) * f_y / 2 - nf_y / 2
                 min_x = int((-off_x + dx)/256)-1
                 min_y = int((-off_y + dy)/256)-1
-                max_x = math.ceil((nf_x + off_x - dx)/256)+2
-                max_y = math.ceil((nf_y + off_y - dy)/256)+2
+                max_x = math.ceil((nf_x - off_x + dx)/256)+2
+                max_y = math.ceil((nf_y - off_y + dy)/256)+2
                 self.message.emit("正在合成第" + str(i) + "层级待配准瓦片。。。\n")
                 des_image = combineTileToImage(i, min_x, min_y, max_x-min_x+1,
                                                max_y-min_y+1, self.img2)
