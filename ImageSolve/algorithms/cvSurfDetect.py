@@ -45,7 +45,7 @@ def sift_detect(img1, img2, detector='surf'):
     bf = cv2.BFMatcher()
     matches = bf.knnMatch(des1, des2, k=2)
     # Apply ratio test
-    good = [[m] for m, n in matches if m.distance < 0.5 * n.distance]
+    good = [[m] for m, n in matches if m.distance < 0.7 * n.distance]
     matches = sorted(good, key=lambda x: x[0].distance)
     """
     with open("./feature.txt", "w") as f:
@@ -58,7 +58,10 @@ def sift_detect(img1, img2, detector='surf'):
     img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches[:100], None, flags=2)
     return bgr_rgb(img3)
     """
-    return kp1, kp2, matches[:100]
+    if len(matches) >= 100:
+        return kp1, kp2, matches[:100]
+    else:
+        return kp1, kp2, matches
 
 
 if __name__ == "__main__":
