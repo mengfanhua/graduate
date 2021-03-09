@@ -25,6 +25,8 @@ if __name__ == '__main__':
     hand.backsignal.connect(enter.show)
     upload.backsignal.connect(enter.show)
 
+    combine.sharepath.connect(upload.set_value)
+
     hand.combinesignal.connect(combine.come)
     combine.backsignal.connect(hand.show)
     combine.combinesignal.connect(twoExecute.come)

@@ -5,6 +5,7 @@ from ImageSolve.autoRegistrationWidget.autoRegistrationWidget import HBoxWidget
 class CombineWidget(QWidget):
     backsignal = pyqtSignal()
     combinesignal = pyqtSignal(str, str, list, list, str, int, int)
+    sharepath = pyqtSignal(str)
 
     def __init__(self):
         super(CombineWidget, self).__init__()
@@ -97,6 +98,7 @@ class CombineWidget(QWidget):
             if len(asd) == 0:
                 b = self.spin1.value()
                 c = self.spin2.value()
+                self.sharepath.emit(self.a)
                 self.hide()
                 self.combinesignal.emit(self.img1, self.img2, self.featureList1, self.featureList2, a, b, c)
             else:

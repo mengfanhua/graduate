@@ -47,6 +47,9 @@ class UploadWidget(QWidget):
         self.hide()
         self.backsignal.emit()
 
+    def set_value(self, s):
+        self.edit.setText(s)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
