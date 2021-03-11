@@ -13,7 +13,7 @@ class EnterWidget(QWidget):
         pt = QPalette()
         pt.setColor(QPalette.WindowText, QColor("#ff0000"))
         self.autoButton = QPushButton("自动标注")
-        self.label = QLabel("    当前自动标注只支持多对两张图\n    片，不支持瓦片！")
+        self.label = QLabel("    当前自动标注只支持多对两张图\n    片，不支持瓦片！配准精度有限，\n    请谨慎使用！")
         self.label.setPalette(pt)
         self.handButton = QPushButton("手动标注")
         self.label2 = QLabel("    手动标注支持瓦片，但只能单图\n    片合成！")
