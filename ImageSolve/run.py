@@ -7,9 +7,12 @@ from ImageSolve.combineWidget.combineWidget import CombineWidget
 from ImageSolve.executeWidget.multiImageWidget import MultiImageWidget
 from ImageSolve.executeWidget.singleImgeWidget import SingleImageWidget
 from ImageSolve.executeWidget.UploadImageWidget import UploadImageWidget
+from ImageSolve.proxyWidget.proxyWidget import ProxyWidget
+from ImageSolve.properties.proxyInit import *
 
 
 if __name__ == '__main__':
+    proxyInit()
     app = QApplication(sys.argv)
     enter = EnterWidget()
     auto = AutoRegistrationWidget()
@@ -19,6 +22,7 @@ if __name__ == '__main__':
     oneExecute = MultiImageWidget()
     twoExecute = SingleImageWidget()
     threeExecute = UploadImageWidget()
+    proxy1 = ProxyWidget()
 
     enter.auto.connect(auto.show)
     enter.hand.connect(hand.show)
@@ -39,6 +43,9 @@ if __name__ == '__main__':
 
     upload.combinesignal.connect(threeExecute.come)
     threeExecute.backsignal.connect(upload.show)
+
+    enter.proxy.connect(proxy1.show)
+    proxy1.backSignal.connect(enter.show)
 
     enter.show()
     app.exec_()
