@@ -1,6 +1,7 @@
 import urllib
 import json
 from ImageSolve.config import *
+from ImageSolve.properties.proxyInit import *
 
 
 class LocationThread(QThread):
@@ -16,7 +17,7 @@ class LocationThread(QThread):
     def run(self):
         city = urllib.parse.quote(self.city)
         try:
-            res = requests.get("https://apis.map.qq.com/jsapi?qt=geoc&addr={}&output=jsonp&pf=jsapi&ref=jsapi".format(city))
+            res = requests.get("http://apis.map.qq.com/jsapi?qt=geoc&addr={}&output=jsonp&pf=jsapi&ref=jsapi".format(city), proxies=proxy)
             data = json.loads(res.text)
             print(data)
             res.close()
@@ -90,9 +91,10 @@ class BDMercatorToLonLatAll:
             cF *= 1
         return T, cF
 
-
+"""
 if __name__ == '__main__':
     lon, lat = get_location("黑山县")
     MClon, MClat = BDMercatorToLonLatAll().convertLonLatToMC(float(lon), float(lat))
     x, y = MClon/math.pow(2, 18-10), MClat/math.pow(2, 18-10)
     print(x/256, y/256)
+"""

@@ -1,6 +1,7 @@
 from PyQt5.QtCore import pyqtSignal, QThread
 import os
 import requests
+from ImageSolve.properties.proxyInit import *
 
 
 toDoList = list()
@@ -20,9 +21,9 @@ class ImageGetThread(QThread):
             temp = toDoList[0]
             # temp为元组，格式为（z，x，y，value，outlinecachepath）
             try:
-                response = self.session.get("https://maponline2.bdimg.com/tile/?qt=vtile&x={}&y={}&z={}&styles=pl&"
+                response = self.session.get("http://maponline2.bdimg.com/tile/?qt=vtile&x={}&y={}&z={}&styles=pl&"
                                             "udt=20210119&scaler=1&showtext=0".format(temp[1], temp[2], temp[0]),
-                                            timeout=10)
+                                            timeout=10, proxies=proxy)
                 if not os.path.exists(os.path.join(temp[4], temp[0], temp[1])):
                     os.makedirs(os.path.join(temp[4], temp[0], temp[1]))
                 with open(os.path.join(temp[4], temp[0], temp[1], temp[2] + ".png"), "wb") as f:

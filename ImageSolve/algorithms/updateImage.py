@@ -1,5 +1,6 @@
 import requests
 from ImageSolve.algorithms.generateKey import generate_key
+from ImageSolve.properties.proxyInit import *
 
 
 def update_image(path, z, x, y, key):
@@ -9,7 +10,7 @@ def update_image(path, z, x, y, key):
         with open("./Resources/host", "r", encoding="utf-8") as f:
             host = f.read()
             f.close()
-        response = requests.post(host + "/update", data=datas, files=files)
+        response = requests.post(host + "/update", data=datas, files=files, proxies=proxy)
         data = response.text
         response.close()
         print(data)
@@ -27,7 +28,7 @@ def validate_key(z, x, y, key):
         with open("./Resources/host", "r", encoding="utf-8") as f:
             host = f.read()
             f.close()
-        response = requests.post(host + "/validate", data=datas)
+        response = requests.post(host + "/validate", data=datas, proxies=proxy)
         data = response.text
         response.close()
         if data == "true":

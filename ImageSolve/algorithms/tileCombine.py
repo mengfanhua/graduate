@@ -1,6 +1,7 @@
 from PIL import Image
 import os
 import requests
+from ImageSolve.properties.proxyInit import *
 
 
 def convertNumberToStr(value):
@@ -39,9 +40,10 @@ def combineTileToImage(start_z, start_x, start_y, len_x, len_y, cachePaths):
                 tile_image = Image.open(path)
                 image.paste(tile_image, (m * 256, n * 256))
             else:
-                response = requests.get("https://maponline2.bdimg.com/tile/?qt=vtile&x={}&y={}&z={}&styles=pl&"
+                response = requests.get("http://maponline2.bdimg.com/tile/?qt=vtile&x={}&y={}&z={}&styles=pl&"
                                         "udt=20210119&scaler=1&showtext=0".format(convertNumberToStr(i),
-                                                                                  convertNumberToStr(-j), start_z))
+                                                                                  convertNumberToStr(-j), start_z),
+                                        proxies=proxy)
                 if not os.path.exists(os.path.join(cachePaths, str(start_z), convertNumberToStr(i))):
                     os.makedirs(os.path.join(cachePaths, str(start_z), convertNumberToStr(i)))
                 with open(os.path.join(path), "wb") as f:
