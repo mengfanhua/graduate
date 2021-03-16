@@ -140,3 +140,8 @@ It's a tool for image registration.(for graduate)
 web端可完成：
 瓦片数据的上传；
 瓦片数据的展示。
+
+
+2021年3月16日18:26:28 author：Meng
+
+添加了代理设置，以便于如公司内网、校园内网等访问外网。
