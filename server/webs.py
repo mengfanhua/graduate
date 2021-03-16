@@ -4,11 +4,11 @@ import tornado.ioloop
 import tornado.web
 import platform
 import json
-from . import solve
+import solve
 
 
 settings = {
-            "debug": False,
+            "debug": True,
             "static_path": os.path.join(os.path.dirname(__file__), "static"),
             "template_path": os.path.join(os.path.dirname(__file__), "templates"),
 }
