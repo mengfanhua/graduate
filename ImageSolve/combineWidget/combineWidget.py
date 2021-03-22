@@ -60,7 +60,7 @@ class CombineWidget(QWidget):
             img_name, _ = QFileDialog.getSaveFileName(self, "Save Image File", filter="*.png")
         else:
             img_name = QFileDialog.getExistingDirectory(self, "Open a Dir")
-            self.edit.setText(img_name)
+        self.edit.setText(img_name)
 
     def spinChanged(self):
         if self.spin1.value() > self.spin2.value():
