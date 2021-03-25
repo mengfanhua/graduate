@@ -1,4 +1,3 @@
-from imagedt.decorator import time_cost
 import cv2
 import time
 import json
@@ -29,7 +28,6 @@ def orb_detect(image_aa, image_bb):
     return bgr_rgb(img3)
 
 
-@time_cost
 def sift_detect(img1, img2, detector='surf'):
     if detector.startswith('si'):
         print("sift detector......")
