@@ -2,6 +2,7 @@
 import os
 import tornado.ioloop
 import tornado.web
+import tornado.httpserver
 import platform
 import json
 import solve
@@ -15,11 +16,17 @@ settings = {
 
 
 class MainHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "http":
+            self.redirect("https://%s" % self.request.full_url()[len("http://"):], permanent=True)
     def get(self):
         self.render("index.html")
 
 
 class UploadHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "http":
+            self.redirect("https://%s" % self.request.full_url()[len("http://"):], permanent=True)
     def post(self):
         key = self.get_argument("key")
         key = str(key)
@@ -54,6 +61,9 @@ class UpdateHandler(tornado.web.RequestHandler):
 
 
 class PictureHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "http":
+            self.redirect("https://%s" % self.request.full_url()[len("http://"):], permanent=True)
     def get(self):
         z = self.get_argument("z", "")
         x = self.get_argument("x", "")
@@ -98,6 +108,9 @@ class ValidateHandler(tornado.web.RequestHandler):
  
 
 class MapShowHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "http":
+            self.redirect("https://%s" % self.request.full_url()[len("http://"):], permanent=True)
     def post(self):
         key = self.get_argument("key")
         key = str(key)
@@ -112,6 +125,9 @@ class MapShowHandler(tornado.web.RequestHandler):
 
 
 class SolveFileHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "http":
+            self.redirect("https://%s" % self.request.full_url()[len("http://"):], permanent=True)
     def post(self):
         postdata = self.request.arguments
         for k in postdata:
@@ -123,12 +139,18 @@ class SolveFileHandler(tornado.web.RequestHandler):
 
 
 class LoginHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "http":
+            self.redirect("https://%s" % self.request.full_url()[len("http://"):], permanent=True)
     def get(self):
         url = "upload"
         self.render("login.html", url_des=url)
 
 
 class LoginShowHandler(tornado.web.RequestHandler):
+    def prepare(self):
+        if self.request.protocol == "http":
+            self.redirect("https://%s" % self.request.full_url()[len("http://"):], permanent=True)
     def get(self):
         url = "image-show"
         self.render("login.html", url_des=url)
@@ -153,5 +175,11 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     print("server startup....")
     app = make_app()
-    app.listen(80)
-    tornado.ioloop.IOLoop.current().start()
+    app1 = make_app()
+    app1.listen(80)
+    server = tornado.httpserver.HTTPServer(app, ssl_options = {
+            "certfile": os.path.join(os.path.abspath("."), "server.crt"),
+            "keyfile": os.path.join(os.path.abspath("."), "server.key"),
+       })
+    server.listen(443)
+    tornado.ioloop.IOLoop.instance().start()
