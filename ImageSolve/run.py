@@ -12,17 +12,17 @@ from ImageSolve.properties.proxyInit import *
 
 
 if __name__ == '__main__':
-    proxyInit()
-    app = QApplication(sys.argv)
-    enter = EnterWidget()
-    auto = AutoRegistrationWidget()
-    hand = MainWindows()
-    upload = UploadWidget()
-    combine = CombineWidget()
-    oneExecute = MultiImageWidget()
-    twoExecute = SingleImageWidget()
-    threeExecute = UploadImageWidget()
-    proxy1 = ProxyWidget()
+    proxyInit()  # 代理初始化，如有代理默认加载
+    app = QApplication(sys.argv)  # 主循环
+    enter = EnterWidget()  # 入口widget
+    auto = AutoRegistrationWidget()  # 自动配准传参界面
+    hand = MainWindows()  # 手动配准执行界面
+    upload = UploadWidget()  # 上传文件传参界面
+    combine = CombineWidget()  # 手动配准传参界面
+    oneExecute = MultiImageWidget()  # 自动配准执行界面
+    twoExecute = SingleImageWidget()  # 单图配准执行界面
+    threeExecute = UploadImageWidget()  # 上传图片执行界面
+    proxy1 = ProxyWidget()  # 代理配置界面
 
     enter.auto.connect(auto.show)
     enter.hand.connect(hand.show)
@@ -47,5 +47,5 @@ if __name__ == '__main__':
     enter.proxy.connect(proxy1.show)
     proxy1.backSignal.connect(enter.show)
 
-    enter.show()
+    enter.show()  # 默认显示入口界面
     app.exec_()

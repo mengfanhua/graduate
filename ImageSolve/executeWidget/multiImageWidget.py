@@ -2,6 +2,9 @@ from ImageSolve.config import *
 from ImageSolve.algorithms.imageFastSolve import image_iter_solve
 from ImageSolve.algorithms.imageTranslate import image_translate
 from ImageSolve.algorithms.combineImage import combine_image
+from ImageSolve.algorithms.cvSurfDetect import sift_detect
+import numpy as np
+from cv2 import cvtColor, COLOR_RGB2GRAY
 
 
 class MultiImageThread(QThread):
@@ -13,16 +16,28 @@ class MultiImageThread(QThread):
         self.img1 = None
         self.img2 = None
         self.img3 = None
+        self.suan = None
 
-    def set_value(self, img1, img2, img3):
+    def set_value(self, img1, img2, img3, suan):
         self.img1 = img1
         self.img2 = img2
         self.img3 = img3
+        self.suan = suan
+
+    def select_suan(self, img1, img2):
+        if self.suan == 0:
+            ori_key, des_key, _ = image_iter_solve(img1, img2, "surf")
+        elif self.suan == 1:
+            ori_key, des_key, _ = image_iter_solve(img1, img2, "sift")
+        else:
+            ori_key = []
+            des_key = []
+        return ori_key, des_key
 
     def run(self):
         if os.path.isfile(self.img1):
             self.message.emit("正在生成标注点。。。\n")
-            ori_key, des_key, _ = image_iter_solve(self.img1, self.img2)
+            ori_key, des_key = self.select_suan(self.img1, self.img2)
             self.message.emit("生成完成，正在进行匹配计算。。。\n")
             alpha, k, dx, dy = image_translate(ori_key, des_key)
             if k == 0:
@@ -39,7 +54,8 @@ class MultiImageThread(QThread):
                 self.message.emit("正在验证第" + str(i+1) + "组标注点。。。\n")
                 if imgList1[i] in imgList2:
                     self.message.emit("正在生成第" + str(i + 1) + "组标注点。。。\n")
-                    ori_key, des_key, _ = image_iter_solve(self.img1 + imgList1[i], self.img2 + imgList1[i])
+                    ori_key, des_key = self.select_suan(os.path.join(self.img1, imgList1[i]),
+                                                        os.path.join(self.img2, imgList1[i]))
                     self.message.emit("正在计算第" + str(i + 1) + "组标注点偏移。。。\n")
                     alpha, k, dx, dy = image_translate(ori_key, des_key)
                     self.message.emit("正在合成第" + str(i + 1) + "组图片。。。\n")
@@ -48,13 +64,13 @@ class MultiImageThread(QThread):
                     else:
                         a, _ = combine_image(self.img1 + imgList1[i], self.img2 + imgList1[i], k, alpha, dx, dy)
                         name = ".".join(imgList1[i].split(".")[:-1])
-                        if os.path.exists(self.img3 + name + ".png"):
+                        if os.path.exists(os.path.join(self.img3, name + ".png")):
                             order = 1
-                            while os.path.exists(self.img3 + name + str(order) + ".png"):
+                            while os.path.exists(os.path.join(self.img3, name + str(order) + ".png")):
                                 order += 1
-                            a.save(self.img3 + name + str(order) + ".png")
+                            a.save(os.path.join(self.img3, name + str(order) + ".png"))
                         else:
-                            a.save(self.img3 + name + ".png")
+                            a.save(os.path.join(self.img3, name + ".png"))
                     self.message.emit("第" + str(i + 1) + "组图片已处理完成。\n\n")
                 else:
                     self.message.emit("没有与第" + str(i + 1) + "组相同名称的图片。\n\n")
@@ -85,10 +101,10 @@ class MultiImageWidget(QWidget):
     def valueEvent(self):
         self.content.verticalScrollBar().setValue(self.content.verticalScrollBar().maximum())
 
-    def come(self, img1, img2, img3):
+    def come(self, img1, img2, img3, suan):
         self.content.setPlainText("初始化。。\n")
         self.ok.setEnabled(False)
-        self.thread.set_value(img1, img2, img3)
+        self.thread.set_value(img1, img2, img3, suan)
         self.thread.start()
         self.show()
 

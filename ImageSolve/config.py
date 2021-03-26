@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFileDialog, QSpinBox
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFileDialog, QSpinBox, QComboBox
 from PyQt5.QtWidgets import QStackedLayout, QSlider, QScrollArea, QRadioButton, QGridLayout, QLineEdit, QMessageBox, QPlainTextEdit
 from PyQt5.Qt import QPixmap, QPoint, Qt, QPainter, QIcon, QColor, QPalette, QPen, QBrush
 from PyQt5.QtCore import QSize, pyqtSignal, QThread
@@ -13,6 +13,7 @@ from ImageSolve.algorithms.imageGetThread import toDoList, containItem
 
 
 class CacheMap:
+    # 地图加载缓存，单图为直接加载，不分片
     def __init__(self, thread, size=20, index=0, cachePath=None):
         self.pixmap = {}
         self.order = []
@@ -22,11 +23,13 @@ class CacheMap:
         self.session = requests.session()
         self.thread = thread
 
+    # 添加单图
     def addOriginMap(self, path, scale=1):
         # 此处专为普通图片设计，用来对大图进行分割，使其避免显存溢出
         self.pixmap[("1", "0", "0")] = QPixmap(path)
         self.order.append(("1", "0", "0"))
 
+    # 添加瓦片
     def addMap(self, key, path):
         temp = QPixmap(path)
         self.pixmap[key] = temp
@@ -37,6 +40,7 @@ class CacheMap:
         else:
             self.order.append(key)
 
+    # 获取地图
     def getMap(self, key):
         if key in self.order:
             self.order.pop(self.order.index(key))
@@ -49,6 +53,7 @@ class CacheMap:
             self.addMap(key, paths)
             return self.pixmap[key]
 
+    # 拼接地址
     def _combinePath(self, key):
         z, x, y = key
         maxs = math.ceil(math.pi * 6378137 / math.pow(2, 26 - int(z)))
@@ -72,6 +77,6 @@ class CacheMap:
         self.session.close()
 
 
-# test
+# 获取不同点颜色
 def getValueColor(value):
     return ColorTranslate(ColorGenerate(value))

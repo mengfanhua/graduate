@@ -14,11 +14,11 @@ class HBoxWidget(QWidget):
 
 class AutoRegistrationWidget(QWidget):
     backsignal = pyqtSignal()
-    combinesignal = pyqtSignal(str, str, str)
+    combinesignal = pyqtSignal(str, str, str, int)
 
     def __init__(self):
         super(AutoRegistrationWidget,self).__init__()
-        self.setFixedSize(QSize(250, 300))
+        self.setFixedSize(QSize(250, 350))
         self.setWindowTitle("图片自动叠加")
         self.radioButton = QRadioButton("选择文件夹")
         self.label = QLabel("选择第一图片或文件夹：")
@@ -33,6 +33,11 @@ class AutoRegistrationWidget(QWidget):
         self.edit3 = QLineEdit()
         self.select3 = QPushButton("...")
         self.oneWidget3 = HBoxWidget(self.edit3, self.select3, 4, 1)
+        self.comb = QComboBox()
+        self.comb.addItem("快速SURF算法")
+        self.comb.addItem("快速SIFT算法")
+        self.label4 = QLabel("选择算法：")
+        self.oneWidget4 = HBoxWidget(self.label4, self.comb, 1, 4)
         self.ok = QPushButton("确定")
         self.back = QPushButton("返回")
         self.twoWidget = HBoxWidget(self.ok, self.back, 1, 1)
@@ -44,6 +49,7 @@ class AutoRegistrationWidget(QWidget):
         self.layout.addWidget(self.oneWidget2)
         self.layout.addWidget(self.label3)
         self.layout.addWidget(self.oneWidget3)
+        self.layout.addWidget(self.oneWidget4)
         self.layout.addWidget(self.twoWidget)
         self.setLayout(self.layout)
         self.radioButton.clicked.connect(self.radioChanged)
@@ -90,11 +96,12 @@ class AutoRegistrationWidget(QWidget):
         a = self.edit.text()
         b = self.edit2.text()
         c = self.edit3.text()
+        d = self.comb.currentIndex()
         if a == "" or b == "" or c == "":
             QMessageBox.information(self, "error", "路径不可为空！")
         else:
             self.hide()
-            self.combinesignal.emit(a, b, c)
+            self.combinesignal.emit(a, b, c, d)
 
 
 if __name__ == '__main__':

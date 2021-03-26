@@ -1,12 +1,12 @@
 import numpy as np
 from PIL import Image
-import cv2
+from cv2 import cvtColor, COLOR_RGB2GRAY
 from ImageSolve.algorithms.cvSurfDetect import sift_detect
 from ImageSolve.algorithms.imageTranslate import image_translate, validate
 import time
 
 
-def image_iter_solve(ori, des, min_xy=None, max_xy=None,
+def image_iter_solve(ori, des, det, min_xy=None, max_xy=None,
                      min_xy1=None, max_xy1=None, loss=None):
     """
     :param ori: path of origin image
@@ -39,9 +39,9 @@ def image_iter_solve(ori, des, min_xy=None, max_xy=None,
             des_image = des_image.resize((int(0.5 * des_x), int(0.5 * des_y)))
             des_scale = 0.5 * des_scale
             des_x, des_y = int(0.5 * des_x), int(0.5 * des_y)
-    ori_input = cv2.cvtColor(np.asarray(ori_image), cv2.COLOR_RGB2GRAY)
-    des_input = cv2.cvtColor(np.asarray(des_image), cv2.COLOR_RGB2GRAY)
-    kp1, kp2, best_matches = sift_detect(ori_input, des_input, detector="surf")
+    ori_input = cvtColor(np.asarray(ori_image), COLOR_RGB2GRAY)
+    des_input = cvtColor(np.asarray(des_image), COLOR_RGB2GRAY)
+    kp1, kp2, best_matches = sift_detect(ori_input, des_input, detector=det)
     ori_key = []
     des_key = []
     for i in range(len(best_matches)):
@@ -58,14 +58,14 @@ def image_iter_solve(ori, des, min_xy=None, max_xy=None,
     new_loss = validate(ori_key, des_key, a, kkk, x, y)
     if loss is None:
         ori_keys, des_keys, new_loss_l = image_iter_solve(
-            ori, des, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
+            ori, des, det, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
         if len(ori_keys) == 0:
             return ori_key, des_key, new_loss
         ori_key_s, des_key_s = _cul_origin_point(min_xy, min_xy1, ori_keys, des_keys)
         return ori_key_s, des_key_s, new_loss_l
     elif loss > new_loss:
         ori_keys, des_keys, new_loss_l = image_iter_solve(
-            ori, des, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
+            ori, des, det, min_xy11, max_xy11, min_xy111, max_xy111, new_loss)
         if len(ori_keys) == 0:
             return ori_key, des_key, new_loss
         ori_key_s, des_key_s = _cul_origin_point(min_xy, min_xy1, ori_keys, des_keys)
@@ -81,9 +81,11 @@ def _cul_origin_point(min_xyz, min_xyz1, ori_key1, des_key1):
         return ori_key1, des_key1
 
 
+"""
 if __name__ == '__main__':
     start_time = time.time()
     _, _, los = image_iter_solve('C:/Users/meng/Desktop/1989.jpg', 'C:/Users/meng/Desktop/19892.png')
     end_time = time.time()
     print("Loss is {} .".format(los))
     print("Time is {} s.".format(end_time-start_time))
+"""

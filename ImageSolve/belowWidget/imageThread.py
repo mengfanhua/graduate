@@ -4,6 +4,7 @@ from ImageSolve.config import *
 class ImageThread(QThread):
     imageGet = pyqtSignal(CacheMap)
 
+    # 加载瓦片
     def __init__(self, cacheMap):
         super(ImageThread, self).__init__()
         self.point = []

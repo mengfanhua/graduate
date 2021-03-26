@@ -4,6 +4,7 @@ import json
 proxy = {}
 
 
+# 代理加载
 def proxyInit():
     try:
         f = open("./Resources/proxy", "r", encoding="utf-8")
@@ -15,6 +16,7 @@ def proxyInit():
         pass
 
 
+# 代理更改
 def proxyChange(newProxy):
     proxy.clear()
     for i in newProxy:

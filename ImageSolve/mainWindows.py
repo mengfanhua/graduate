@@ -15,11 +15,11 @@ class MainWindows(QWidget):
 
     def __init__(self):
         super(MainWindows, self).__init__()
-        self.imageGetThread = ImageGetThread()
+        self.imageGetThread = ImageGetThread()  # 用于处理网络获取瓦片的子线程
         self.imageGetThread.touch.connect(self.divide_imagebox)
-        self.locationThread = LocationThread()
+        self.locationThread = LocationThread()  # 用于处理用户输入定位的子线程
         self.locationThread.finish.connect(self.finishEvent)
-        self.locationThread1 = LocationThread()
+        self.locationThread1 = LocationThread()  # 同上
         self.locationThread1.finish.connect(self.finishEvent1)
         self.setFixedSize(QSize(1300, 700))
         self.openFrontImage = QPushButton("打开前景图")
@@ -122,10 +122,12 @@ class MainWindows(QWidget):
         self.flag_exchange()
 
     def backEvent(self):
+        # 返回信号
         self.hide()
         self.backsignal.emit()
 
     def get_position(self):
+        # 在图片已加载且为瓦片格式时触发
         if self.imageBackBox.scaled_img is not None and os.path.isfile(self.imageBackBox.img) is False:
             self.lastPage1.setText(self.lastPage.text())
             self.locationThread.set_city(self.lastPage.text())
@@ -136,14 +138,17 @@ class MainWindows(QWidget):
 
     def finishEvent(self, x, y):
         if x == "":
+            # 没有查询到结果
             self.lastPage.setText("error")
         else:
+            # 通过百度地图与墨卡托坐标转换方法获取瓦片定位
             MClon, MClat = BDMercatorToLonLatAll().convertLonLatToMC(float(x), float(y))
             xx, yy = MClon/math.pow(2, 18-self.imageBackBox.level), MClat/math.pow(2, 18-self.imageBackBox.level)
             self.imageBackBox.point = QPoint(250-int(xx), int(yy)-6)
             self.imageBackBox.pointInit()
 
     def get_position1(self):
+        # 同get_position
         if self.imageBackBox1.scaled_img is not None and os.path.isfile(self.imageBackBox1.img) is False:
             self.lastPage.setText(self.lastPage1.text())
             self.locationThread1.set_city(self.lastPage1.text())
@@ -153,6 +158,7 @@ class MainWindows(QWidget):
                 self.lastPage1.setText("访问速度过快！")
 
     def finishEvent1(self, x, y):
+        # 同finishEvent
         if x == "":
             self.lastPage1.setText("error")
         else:
@@ -163,6 +169,7 @@ class MainWindows(QWidget):
             self.imageBackBox1.pointInit()
 
     def divide_imagebox(self, value):
+        # 通过预先设定好的编号来确定请求是从哪个界面传出的
         if value == 1:
             self.imageFrontBox.pointInit()
         elif value == 2:
@@ -173,6 +180,7 @@ class MainWindows(QWidget):
             self.imageBackBox1.pointInit()
 
     def change_layout(self):
+        # 更改第二界面布局， 组件不变，但layout改变
         self.twoShow.changeLayout(self.openFrontImage1, self.openBackImage1,
                                   self.sizeFrontAdjust1, self.sizeBackAdjust1,
                                   self.angleFrontAdjust1, self.angleBackAdjust1,
@@ -183,6 +191,7 @@ class MainWindows(QWidget):
         self.repaint()
 
     def radioChanged(self):
+        # 需同步另一界面的button
         self.radioButton1.setChecked(self.radioButton.isChecked())
 
     def radioChanged1(self):
@@ -190,6 +199,7 @@ class MainWindows(QWidget):
 
     def exchangeMode(self):
         if self.layout.currentIndex() == 0:
+            # 将imagebox内的参数共享给另一界面
             self.layout.setCurrentIndex(1)
             self.imageFrontBox1.img = self.imageFrontBox.img
             self.imageFrontBox1.scaled_img = self.imageFrontBox.scaled_img
@@ -260,12 +270,6 @@ class MainWindows(QWidget):
         if img_name != "":
             self.imageFrontBox.set_image(img_name)
             self.imageFrontBox1.set_image(img_name)
-        """
-        d = int(self.below.frontImage.scale * 10)
-        f = self.below.frontImage.scale - float(d)/10
-        self.above.adjust.frontAdjust.slider.maxSlider.setValue(d)
-        self.above.adjust.frontAdjust.slider.minSlider.setValue(int(f * 1000))
-        """
 
     def open_back_image(self):
         """
@@ -279,18 +283,13 @@ class MainWindows(QWidget):
         if img_name != "":
             self.imageBackBox.set_image(img_name)
             self.imageBackBox1.set_image(img_name)
-        """
-        d = int(self.below.backImage.scale * 10)
-        f = self.below.backImage.scale - float(d)/10
-        self.above.adjust.backAdjust.slider.maxSlider.setValue(d * 10)
-        self.above.adjust.backAdjust.slider.minSlider.setValue(int(f * 1000))
-        """
 
     def slider_move(self):
         """
         used to enlarge image
         :return:
         """
+        # 用于前景图缩放比例的计算
         d = float(self.sizeFrontAdjust.slider.maxSlider.value()) / 10
         f = float(self.sizeFrontAdjust.slider.minSlider.value()) / 1000
         self.sizeFrontAdjust1.slider.maxSlider.setValue(self.sizeFrontAdjust.slider.maxSlider.value())
@@ -304,6 +303,7 @@ class MainWindows(QWidget):
         used to enlarge image
         :return:
         """
+        # 此处分为两种，加载为瓦片则计算层级与放缩比
         if self.imageBackBox.scaled_img and os.path.isfile(self.imageBackBox.img):
             d = float(self.sizeBackAdjust.slider.maxSlider.value()) / 10
             f = float(self.sizeBackAdjust.slider.minSlider.value()) / 1000
@@ -355,6 +355,7 @@ class MainWindows(QWidget):
         self.update()
 
     def slider_angle(self):
+        # 根据计算每个刻度为18度，可满足旋转一周
         if self.imageFrontBox.scaled_img:
             d = float(self.angleFrontAdjust.slider.maxSlider.value() - 1) * 18
             f = float(self.angleFrontAdjust.slider.minSlider.value()) * 0.18
@@ -395,6 +396,7 @@ class MainWindows(QWidget):
         self.update()
 
     def flag_exchange(self):
+        # 重叠样式中，前景图后景图的转换按钮
         if self.exchangeBack.text() == "front":
             self.oneShow.imageBox.layout.setCurrentIndex(1)
             self.oneShow.aboveWidget.sizeWidget.layout.setCurrentIndex(1)
@@ -410,6 +412,7 @@ class MainWindows(QWidget):
         self.repaint()
 
     def addPoint(self, point):
+        # 触发添加关键点的按钮
         value = self.pointFrontContent.layout.count()
         temp = PointWidget(point, value + 1)
         temp.deletePoint.connect(self.delPoint)
@@ -432,11 +435,13 @@ class MainWindows(QWidget):
         self.pointBackContent1.layout.addWidget(temp)
 
     def delPoint(self, value):
+        # 触发删除某个关键点
         count = self.pointFrontContent.layout.count()
         for i in range(value, count):
             self.pointFrontContent.layout.itemAt(i).widget().value -= 1
             self.pointFrontContent.layout.itemAt(i).widget().repaint()
         # self.imageFrontBox.featureList.pop(value - 1)
+        # 此处有一个关键点：由于两个界面共享featureList，所以只需要删除一次就可以了
         self.pointFrontContent.layout.itemAt(value - 1).widget().deleteLater()
 
         count = self.pointFrontContent1.layout.count()
@@ -465,6 +470,7 @@ class MainWindows(QWidget):
         self.repaint()
 
     def combine(self):
+        # 触发合成函数
         if len(self.imageFrontBox.featureList) < 3 or len(self.imageBackBox.featureList) < 3:
             QMessageBox.information(self, "error", "至少选择三对标注点！")
         else:
