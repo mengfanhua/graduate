@@ -26,7 +26,7 @@ def cnn_feature_extract(image,scales=[.25, 0.50, 1.0], nfeatures = 1000):
         image = image[:, :, np.newaxis]
         image = np.repeat(image, 3, -1)
 
-    
+
     resized_image = image
     if max(resized_image.shape) > max_edge:
         resized_image = scipy.misc.imresize(
