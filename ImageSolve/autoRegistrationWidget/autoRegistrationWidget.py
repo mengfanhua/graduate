@@ -36,6 +36,7 @@ class AutoRegistrationWidget(QWidget):
         self.comb = QComboBox()
         self.comb.addItem("快速SURF算法")
         self.comb.addItem("快速SIFT算法")
+        self.comb.addItem("sobel+CNN算法")
         self.label4 = QLabel("选择算法：")
         self.oneWidget4 = HBoxWidget(self.label4, self.comb, 1, 4)
         self.ok = QPushButton("确定")
