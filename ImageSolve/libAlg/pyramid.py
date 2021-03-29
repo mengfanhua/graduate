@@ -4,8 +4,7 @@ import torch.nn.functional as F
 
 from ImageSolve.libAlg.exceptions import EmptyTensorError
 from ImageSolve.libAlg.utils import interpolate_dense_features, upscale_positions
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 def process_multiscale(image, model, scales=[.25, 0.50, 1.0]):
     b, _, h_init, w_init = image.size()
