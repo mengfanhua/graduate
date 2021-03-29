@@ -2,9 +2,7 @@ from ImageSolve.config import *
 from ImageSolve.algorithms.imageFastSolve import image_iter_solve
 from ImageSolve.algorithms.imageTranslate import image_translate
 from ImageSolve.algorithms.combineImage import combine_image
-from ImageSolve.algorithms.cvSurfDetect import sift_detect
-import numpy as np
-from cv2 import cvtColor, COLOR_RGB2GRAY
+from ImageSolve.algorithms.cnnmatcher import cnn_matcher
 
 
 class MultiImageThread(QThread):
@@ -29,6 +27,8 @@ class MultiImageThread(QThread):
             ori_key, des_key, _ = image_iter_solve(img1, img2, "surf")
         elif self.suan == 1:
             ori_key, des_key, _ = image_iter_solve(img1, img2, "sift")
+        elif self.suan == 2:
+            ori_key, des_key = cnn_matcher(img1, img2)
         else:
             ori_key = []
             des_key = []
