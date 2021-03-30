@@ -31,8 +31,8 @@ def combine_image(front_image_path, back_image_path, k, alpha, dx, dy):
     off_y = k * math.sin(math.radians(alpha)) * f_x / 2 + k * math.cos(math.radians(alpha)) * f_y / 2 - nf_y / 2
     min_x = min((-off_x + dx), 0)
     min_y = min((-off_y + dy), 0)
-    max_x = max((nf_x + off_x - dx), b_x)
-    max_y = max((nf_y + off_y - dy), b_y)
+    max_x = max((nf_x - off_x + dx), b_x)
+    max_y = max((nf_y - off_y + dy), b_y)
     bottom_image = Image.new("RGBA", (int(max_x - min_x), int(max_y-min_y)))
     bottom_image.paste(back, (int(-min_x), int(-min_y)), back)
     bottom_image.paste(front, (int(-min_x - off_x + dx), int(-min_y - off_y + dy)), front)
