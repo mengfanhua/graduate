@@ -56,16 +56,27 @@ def match_features_get(image1,image2):
     locations_1_to_use = np.array(locations_1_to_use)
     locations_2_to_use = np.array(locations_2_to_use)
 
-    _, inliers = measure.ransac((locations_1_to_use, locations_2_to_use),
-                                transform.AffineTransform,
-                                min_samples=3,
-                                residual_threshold=_RESIDUAL_THRESHOLD,
-                                max_trials=2000)
+    inliers = None
+    for i in range(20):
+        _, inlierss = measure.ransac((locations_1_to_use, locations_2_to_use),
+                                    transform.AffineTransform,
+                                    min_samples=3,
+                                    residual_threshold=_RESIDUAL_THRESHOLD,
+                                    max_trials=2000)
+        print('Found %d inliers' % sum(inlierss))
+        if inliers is None:
+            inliers = np.array(inlierss, dtype=np.int8)
+        else:
+            inliers += np.array(inlierss, dtype=np.int8)
 
-    print('Found %d inliers' % sum(inliers))
-
+    max_count = max(inliers)
+    min_count = min(inliers)
+    avg_count = int((max_count+min_count)/2)
+    inliers = np.minimum(np.maximum(inliers-avg_count, 0), 1)
+    inliers = np.array(inliers, dtype=np.bool8)
     inlier_idxs = np.nonzero(inliers)[0]
     # 最终匹配结果
+    print(inlier_idxs)
     matches = np.column_stack((inlier_idxs, inlier_idxs))
     print('whole time is %6.3f' % (time.perf_counter() - start0))
     print("最终匹配点的数量：" + str(matches.shape[0]))
