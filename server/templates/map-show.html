@@ -22,6 +22,8 @@
 <body>
     <div id="container">
     </div>
+<div class=" BMap_cpyCtrl anchorBL" style="right: 2px; top: 2px; left: auto; bottom: auto; white-space: nowrap; position: absolute; z-index: 10; cursor: default; -ms-text-size-adjust: none;" unselectable="on"><span style="display: block;" _cid="1"><span style="background: rgba(255, 255, 255, 0.701961);padding: 0px 1px;line-height: 16px;display: inline;height: 16px;"><a href="https://www.image-registration.ltd" target="_blank">回到图片展示主页</a></span></span></div>
+<div class=" BMap_cpyCtrl anchorBL" style="right: 2px; top: auto; left: auto; bottom: 2px; white-space: nowrap; position: absolute; z-index: 10; cursor: default; -ms-text-size-adjust: none;" unselectable="on"><span style="display: block;" _cid="1"><span style="background: rgba(255, 255, 255, 0.701961);padding: 0px 1px;line-height: 16px;display: inline;height: 16px;"><a href="http://beian.miit.gov.cn" target="_blank">辽ICP备2021002474号</a></span></span></div>
 </body>
 </html>
 <script>
@@ -44,7 +46,7 @@ var udtVersion = '20190102';
 var tilelayer = new BMapGL.TileLayer({
     transparentPng: isTilesPng
 });
-tilelayer.zIndex = 110;
+tilelayer.zIndex = 80;
 // point为图块坐标，level为图块的级别
 // 当地图需要显示特定级别的特定位置的图块时会自动调用此方法，并提供这两个参数
 tilelayer.getTilesUrl = function (point, level) {
@@ -53,7 +55,7 @@ tilelayer.getTilesUrl = function (point, level) {
     }
     var row = point.x;
     var col = point.y;
-    var url = '//82.156.1.179/pic?x=' + row + '&y=' + col + '&z=' + level + '&key=' + "{{key}}";
+    var url = '/pic?x=' + row + '&y=' + col + '&z=' + level + '&key=' + "{{key}}";
     return url;
 };
 map.addTileLayer(this.tilelayer);
