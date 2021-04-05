@@ -1,9 +1,8 @@
 import numpy as np
 from PIL import Image
 from cv2 import cvtColor, COLOR_RGB2GRAY
-from ImageSolve.algorithms.cvSurfDetect import sift_detect
-from ImageSolve.algorithms.imageTranslate import image_translate, validate
-import time
+from .cvSurfDetect import sift_detect
+from .imageTranslate import image_translate, validate
 
 
 def image_iter_solve(ori, des, det, min_xy=None, max_xy=None,

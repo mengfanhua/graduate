@@ -1,7 +1,7 @@
 from cv2 import xfeatures2d, BFMatcher
 import time
 import json
-from ImageSolve.algorithms.imageTranslate import image_translate, validate
+# from ImageSolve.algorithms.imageTranslate import image_translate, validate
 
 # print('cv version: ', cv2.__version__)
 
