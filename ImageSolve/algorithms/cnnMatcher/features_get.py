@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from ImageSolve.libAlg.cnn_feature import cnn_feature_extract
+from .libAlg.cnn_feature import cnn_feature_extract
 import time
 from skimage import measure
 from skimage import transform

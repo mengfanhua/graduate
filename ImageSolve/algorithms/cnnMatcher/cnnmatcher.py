@@ -1,8 +1,7 @@
 from PIL import Image
 import cv2
 import numpy as np
-from ImageSolve.algorithms import sobel
-from ImageSolve.algorithms import features_get
+from . import sobel, features_get
 
 
 def cnn_matcher(img1, img2):

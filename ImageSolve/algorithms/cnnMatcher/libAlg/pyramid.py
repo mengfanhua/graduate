@@ -1,9 +1,8 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 
-from ImageSolve.libAlg.exceptions import EmptyTensorError
-from ImageSolve.libAlg.utils import interpolate_dense_features, upscale_positions
+from .exceptions import EmptyTensorError
+from .utils import interpolate_dense_features, upscale_positions
 
 
 def process_multiscale(image, model, scales=[.25, 0.50, 1.0]):

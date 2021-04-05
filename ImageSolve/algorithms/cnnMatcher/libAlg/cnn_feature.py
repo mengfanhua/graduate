@@ -1,7 +1,7 @@
 import torch
-from ImageSolve.libAlg.model import D2Net
-from ImageSolve.libAlg.utils import preprocess_image
-from ImageSolve.libAlg.pyramid import process_multiscale
+from .model import D2Net
+from .utils import preprocess_image
+from .pyramid import process_multiscale
 import scipy
 import scipy.io
 import scipy.misc
@@ -11,7 +11,7 @@ use_cuda = torch.cuda.is_available()
 
 # Creating CNN model
 model = D2Net(
-    model_file="./models/d2_tf.pth",
+    model_file="./algorithms/cnnMatcher/models/d2_tf.pth",
     use_relu=True,
     use_cuda=use_cuda
 )

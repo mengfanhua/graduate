@@ -2,7 +2,7 @@ import numpy as np
 
 import torch
 
-from ImageSolve.libAlg.exceptions import EmptyTensorError
+from .exceptions import EmptyTensorError
 
 
 def preprocess_image(image, preprocessing=None):
