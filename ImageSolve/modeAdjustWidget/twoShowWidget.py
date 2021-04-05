@@ -7,7 +7,8 @@ class TwoShowWidget(QWidget):
     def __init__(self, openFrontImage, openBackImage, sizeFrontAdjust,
                  sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                  lastPage, nextPage, imageFrontBox, imageBackBox,
-                 exchangeShowMode, imagePaste, point1, point2, radio, changeLayout, comeback):
+                 exchangeShowMode, imagePaste, point1, point2, radio,
+                 changeLayout, comeback, opacity):
         super(TwoShowWidget, self).__init__()
         self.layout = QStackedLayout()
         self.layout.setStackingMode(QStackedLayout.StackOne)
@@ -15,7 +16,8 @@ class TwoShowWidget(QWidget):
         self.content = HBoxShowWidget(openFrontImage, openBackImage, sizeFrontAdjust,
                                       sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                                       lastPage, nextPage, imageFrontBox, imageBackBox,
-                                      exchangeShowMode, imagePaste, point1, point2, radio, changeLayout, comeback)
+                                      exchangeShowMode, imagePaste, point1, point2, radio,
+                                      changeLayout, comeback, opacity)
         self.layout.addWidget(self.content)
         self.layout.setCurrentIndex(0)
         self.setLayout(self.layout)
@@ -23,13 +25,15 @@ class TwoShowWidget(QWidget):
     def changeLayout(self, openFrontImage, openBackImage, sizeFrontAdjust,
                  sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                  lastPage, nextPage, imageFrontBox, imageBackBox,
-                 exchangeShowMode, imagePaste, point1, point2, radio, changeLayout, comeback):
+                 exchangeShowMode, imagePaste, point1, point2, radio,
+                     changeLayout, comeback, opacity):
         if self.value == 0:
             self.value += 1
             content = VBoxShowWidget(openFrontImage, openBackImage, sizeFrontAdjust,
                                           sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                                           lastPage, nextPage, imageFrontBox, imageBackBox,
-                                          exchangeShowMode, imagePaste, point1, point2, radio, changeLayout, comeback)
+                                          exchangeShowMode, imagePaste, point1, point2, radio,
+                                     changeLayout, comeback, opacity)
             self.layout.addWidget(content)
             self.layout.setCurrentIndex(1)
             self.repaint()
@@ -39,7 +43,7 @@ class TwoShowWidget(QWidget):
                                               sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                                               lastPage, nextPage, imageFrontBox, imageBackBox,
                                               exchangeShowMode, imagePaste, point1, point2, radio, changeLayout,
-                                         comeback)
+                                         comeback, opacity)
                 self.layout.itemAt(0).widget().deleteLater()
                 self.layout.insertWidget(0, content)
                 self.layout.setCurrentIndex(0)
@@ -48,7 +52,8 @@ class TwoShowWidget(QWidget):
                 content = VBoxShowWidget(openFrontImage, openBackImage, sizeFrontAdjust,
                                          sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                                          lastPage, nextPage, imageFrontBox, imageBackBox,
-                                         exchangeShowMode, imagePaste, point1, point2, radio, changeLayout, comeback)
+                                         exchangeShowMode, imagePaste, point1, point2, radio,
+                                         changeLayout, comeback, opacity)
                 self.layout.itemAt(1).widget().deleteLater()
                 self.layout.insertWidget(1, content)
                 self.layout.setCurrentIndex(1)

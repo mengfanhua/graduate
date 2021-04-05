@@ -7,13 +7,14 @@ class HBoxShowWidget(QWidget):
     def __init__(self, openFrontImage, openBackImage, sizeFrontAdjust,
                  sizeBackAdjust, angleFrontAdjust, angleBackAdjust,
                  lastPage, nextPage, imageFrontBox, imageBackBox,
-                 exchangeShowMode, imagePaste, point1, point2, radio, changeLayout, comeback):
+                 exchangeShowMode, imagePaste, point1, point2, radio,
+                 changeLayout, comeback, opacity):
         super(HBoxShowWidget, self).__init__()
         self.layout = QVBoxLayout()
         self.aboveWidget = MixHWidget(openFrontImage, sizeFrontAdjust,
                                      angleFrontAdjust, imageFrontBox, point1, None)
         self.middleWidget = MixHWidget(openBackImage, sizeBackAdjust, angleBackAdjust, imageBackBox, point2, radio)
-        self.bottomWidget = BottomWidget(lastPage, nextPage, exchangeShowMode, imagePaste, changeLayout, comeback)
+        self.bottomWidget = BottomWidget(lastPage, nextPage, exchangeShowMode, imagePaste, changeLayout, comeback, opacity)
         self.layout.addWidget(self.aboveWidget)
         self.layout.addWidget(self.middleWidget)
         self.layout.addWidget(self.bottomWidget)
