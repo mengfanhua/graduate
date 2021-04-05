@@ -1,8 +1,8 @@
 from ImageSolve.config import *
-from ImageSolve.algorithms.imageFastSolve import image_iter_solve
+from ImageSolve.algorithms.fastSolve.imageFastSolve import image_iter_solve
 from ImageSolve.algorithms.imageTranslate import image_translate
 from ImageSolve.algorithms.combineImage import combine_image
-from ImageSolve.algorithms.cnnmatcher import cnn_matcher
+from ImageSolve.algorithms.cnnMatcher.cnnmatcher import cnn_matcher
 
 
 class MultiImageThread(QThread):
