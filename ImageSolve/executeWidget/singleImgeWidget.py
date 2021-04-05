@@ -18,8 +18,9 @@ class SingleImageThread(QThread):
         self.output = None
         self.below = None
         self.above = None
+        self.opacity = None
 
-    def set_value(self, img1, img2, ori_key, des_key, output, below, above):
+    def set_value(self, img1, img2, ori_key, des_key, output, below, above, opacity):
         self.ori_key = ori_key.copy()
         self.des_key = des_key.copy()
         self.img1 = img1
@@ -27,6 +28,7 @@ class SingleImageThread(QThread):
         self.output = output
         self.below = below
         self.above = above
+        self.opacity = opacity
 
     def run(self):
         ori_key = exchangeType(self.ori_key)
@@ -36,7 +38,7 @@ class SingleImageThread(QThread):
             self.message.emit("正在进行参数计算。。。\n")
             alpha, k, dx, dy = image_translate(ori_key, des_key)
             self.message.emit("正在合成。。。\n")
-            a, _ = combine_image(self.img1, self.img2, k, alpha, dx, dy)
+            a, _ = combine_image(self.img1, self.img2, k, alpha, dx, dy, self.opacity)
             self.message.emit("图片合成完毕。\n\n")
             a.save(self.output)
         else:
@@ -62,7 +64,7 @@ class SingleImageThread(QThread):
                                                max_y-min_y+1, self.img2)
                 self.message.emit("正在合成。。。\n")
                 a, _ = combine_image(self.img1, des_image, k, alpha, dx - min_x * 256,
-                                     dy - min_y * 256)
+                                     dy - min_y * 256, self.opacity)
                 self.message.emit("合成完成，正在分割瓦片并保存。。。\n")
                 divideImageToTile(a, i, min_x, min_y, self.output)
                 self.message.emit("第" + str(i) + "层级瓦片处理完成。\n\n")
@@ -92,10 +94,10 @@ class SingleImageWidget(QWidget):
     def valueEvent(self):
         self.content.verticalScrollBar().setValue(self.content.verticalScrollBar().maximum())
 
-    def come(self, img1, img2, fe1, fe2, a, b, c):
+    def come(self, img1, img2, fe1, fe2, a, b, c, o):
         self.content.setPlainText("初始化。。\n")
         self.ok.setEnabled(False)
-        self.thread.set_value(img1, img2, fe1, fe2, a, b, c)
+        self.thread.set_value(img1, img2, fe1, fe2, a, b, c, o)
         self.thread.start()
         self.show()
 

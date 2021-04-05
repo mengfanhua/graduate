@@ -13,6 +13,7 @@ class CombineWidget(QWidget):
         self.img2 = None
         self.featureList1 = None
         self.featureList2 = None
+        self.opacity = 1
         self.setFixedSize(QSize(250, 300))
         self.setWindowTitle("参数配置")
         self.label = QLabel("请选择目的文件夹：")
@@ -74,11 +75,12 @@ class CombineWidget(QWidget):
         self.hide()
         self.backsignal.emit()
 
-    def come(self, a, b, c, d):
+    def come(self, a, b, c, d, o):
         self.img1 = a
         self.img2 = b
         self.featureList1 = c
         self.featureList2 = d
+        self.opacity = o
         if os.path.isfile(self.img2):
             self.sonWidget.setEnabled(False)
         else:
@@ -91,7 +93,8 @@ class CombineWidget(QWidget):
         elif os.path.isfile(self.img2):
             a = self.edit.text()
             self.hide()
-            self.combinesignal.emit(self.img1, self.img2, self.featureList1, self.featureList2, a, 0, 0)
+            self.combinesignal.emit(self.img1, self.img2, self.featureList1,
+                                    self.featureList2, a, 0, 0, self.opacity)
         else:
             a = self.edit.text()
             asd = os.listdir(a)
@@ -100,6 +103,7 @@ class CombineWidget(QWidget):
                 c = self.spin2.value()
                 self.sharepath.emit(a)
                 self.hide()
-                self.combinesignal.emit(self.img1, self.img2, self.featureList1, self.featureList2, a, b, c)
+                self.combinesignal.emit(self.img1, self.img2, self.featureList1,
+                                        self.featureList2, a, b, c, self.opacity)
             else:
                 QMessageBox.information(self, "error", "该文件夹非空！")
