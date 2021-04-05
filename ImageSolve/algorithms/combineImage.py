@@ -25,6 +25,8 @@ def combine_image(front_image_path, back_image_path, k, alpha, dx, dy, opacity=N
     f_x, f_y = front.size
     front = front.resize((int(f_x*k), int(f_y*k)), Image.ANTIALIAS)  # 此处放缩尽可能放大，否则会损失精度，必要时可放大背景图
     front = front.rotate(-alpha, expand=True)
+    if opacity is not None:
+        front.putalpha(int(opacity*255))
     nf_x, nf_y = front.size
     b_x, b_y = back.size
     off_x = k * math.cos(math.radians(alpha)) * f_x / 2 - k * math.sin(math.radians(alpha)) * f_y / 2 - nf_x / 2
