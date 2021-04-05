@@ -4,7 +4,7 @@ import math
 # from ImageSolve.algorithms.imageTranslate import image_translate
 
 
-def combine_image(front_image_path, back_image_path, k, alpha, dx, dy):
+def combine_image(front_image_path, back_image_path, k, alpha, dx, dy, opacity=None):
     """
     :param front_image_path: path of front image
     :param back_image_path: path of background image
