@@ -25,6 +25,7 @@ class ImageBox(QWidget):
         self.level = 3
         self.start_time = None
         self.index = index
+        self.opacity = 1
 
     def set_image(self, img_path):
         """
@@ -83,6 +84,7 @@ class ImageBox(QWidget):
             # timg = ImageQt.toqpixmap(self.img)
             painter = QPainter()
             painter.begin(self)
+            painter.setOpacity(self.opacity)
             painter.translate(0, 0)
             painter.scale(self.scale, self.scale)
             painter.rotate(self.angle)
