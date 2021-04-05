@@ -4,7 +4,7 @@ from ImageSolve.autoRegistrationWidget.autoRegistrationWidget import HBoxWidget
 
 class CombineWidget(QWidget):
     backsignal = pyqtSignal()
-    combinesignal = pyqtSignal(str, str, list, list, str, int, int)
+    combinesignal = pyqtSignal(str, str, list, list, str, int, int, float)
     sharepath = pyqtSignal(str)
 
     def __init__(self):

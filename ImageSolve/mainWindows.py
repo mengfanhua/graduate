@@ -11,7 +11,7 @@ from ImageSolve.algorithms.getLocation import LocationThread, BDMercatorToLonLat
 
 class MainWindows(QWidget):
     backsignal = pyqtSignal()
-    combinesignal = pyqtSignal(str, str, list, list)
+    combinesignal = pyqtSignal(str, str, list, list, float)
 
     def __init__(self):
         super(MainWindows, self).__init__()
