@@ -35,8 +35,9 @@ class UploadImageThread(QThread):
                         else:
                             self.message.emit(os.path.join(self.img1, z[i], x[j], y[k]) + " 上传失败！\n")
                     else:
-                        self.question.emit(os.path.join(self.img1, z[i], x[j], y[k]))
-                        pause = 0
+                        global pause
+                        if pause == 0:
+                            self.question.emit(os.path.join(self.img1, z[i], x[j], y[k]))
                         while pause == 0:
                             pass
                         if pause == 1:
@@ -82,6 +83,8 @@ class UploadImageWidget(QWidget):
         self.content.setPlainText("初始化。。\n")
         self.ok.setEnabled(False)
         self.thread.set_value(img1, key)
+        global pause
+        pause = 0
         self.thread.start()
         self.show()
 
@@ -96,6 +99,7 @@ class UploadImageWidget(QWidget):
         self.ok.setEnabled(True)
 
     def pause_judge(self, s):
+        global pause
         result = QMessageBox.question(self, "yes or no", s + " 存在或网络异常，是否继续？",
                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if result == QMessageBox.Yes:

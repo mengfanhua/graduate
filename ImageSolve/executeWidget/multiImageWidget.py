@@ -62,7 +62,8 @@ class MultiImageThread(QThread):
                     if k == 0:
                         self.message.emit("匹配失败，图片匹配的关键点过少，无法合成！\n")
                     else:
-                        a, _ = combine_image(self.img1 + imgList1[i], self.img2 + imgList1[i], k, alpha, dx, dy)
+                        a, _ = combine_image(os.path.join(self.img1, imgList1[i]), os.path.join(self.img2, imgList1[i]),
+                                             k, alpha, dx, dy)
                         name = ".".join(imgList1[i].split(".")[:-1])
                         if os.path.exists(os.path.join(self.img3, name + ".png")):
                             order = 1
